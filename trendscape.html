@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trendscape</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        #graph {
+            width: 800px;
+            height: 600px;
+            border: 1px solid #ccc;
+        }
+        .links line {
+            stroke: #999;
+            stroke-opacity: 0.6;
+        }
+        .nodes circle {
+            stroke: #fff;
+            stroke-width: 1.5px;
+            cursor: move;
+        }
+        .node-label {
+            font-size: 12px;
+            font-family: sans-serif;
+            pointer-events: none;
+        }
+        #controls {
+            margin-bottom: 10px;
+        }
+        select {
+            margin-right: 10px;
+        }
+        .legend {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        .legend-item {
+            margin-bottom: 5px;
+        }
+        .legend-color {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+        #loading {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <input type="file" id="folderInput" webkitdirectory directory multiple>
+        <br/>
+        <select id="dataTypeSelect">
+            <option value="チームのありたい姿">チームのありたい姿</option>
+            <option value="今年の取り組み">今年の取り組み</option>
+        </select>
+        <br/>
+        A: <select id="selectA"></select>
+        B: <select id="selectB"></select>
+        <button id="computeButton">Compute</button>
+        <div>
+            <input type="range" id="linkDistance" min="0.5" max="5" value="1" step="0.1">
+            <label for="linkDistance">Link Distance</label>
+        </div>
+        <div>
+            <input type="range" id="nodeSizeSlider" min="1" max="30" value="1" step="1">
+            <label for="nodeSizeSlider">Node Factor</label>
+        </div>
+        <div>
+            Source: <select id="selectSource"></select>
+            Target: <select id="selectTarget"></select>
+            <button id="findPathButton">Find Shortest Path</button>
+            <button id="clearPathButton">Clear Path</button>
+        </div>
+        <button id="resetZoomButton">Reset Zoom</button>
+    </div>
+    <div id="graph"></div>
+    <div id="shortestPathText" style="margin-top: 20px; font-family: sans-serif; font-size: 16px; color: #333; padding: 10px; background-color: #f0f0f0; border-radius: 5px;"></div>
+    <div id="loading">Loading...</div>
+    <div class="legend">
+        <div class="legend-item"><span class="legend-color" style="background-color: red;"></span>Source Nodes</div>
+        <div class="legend-item"><span class="legend-color" style="background-color: blue;"></span>Target Nodes</div>
+        <div class="legend-item"><span class="legend-color" style="background-color: green;"></span>Other Nodes</div>
+        <div class="legend-item"><span class="legend-color" style="background-color: #FF4500;"></span>Shortest Path</div>
+    </div>
+
+    <script>
+        let graphData;
+        let nodes = [];
+        let dataFiles = {};
+        let jsonData;
+        let currentDataType = "チームのありたい姿";
+        let svg, zoom;
+
+        function handleFolderSelect(event) {
+            const files = event.target.files;
+            dataFiles = {};
+            nodes = new Set();
+
+            let jsonFilePromise = null;
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.name.endsWith('.csv')) {
+                    dataFiles[file.name] = file;
+                    const [nodeA, nodeB] = file.name.slice(0, -4).split('_');
+                    nodes.add(nodeA);
+                    nodes.add(nodeB);
+                } else if (file.name === 'nodes.json') {
+                    jsonFilePromise = file.text().then(text => {
+                        try {
+                            jsonData = JSON.parse(text);
+                            nodes = new Set(jsonData.nodes);
+                            jsonData["チームのありたい姿"] = filterDataToNodes(jsonData["チームのありたい姿"], nodes);
+                            jsonData["今年の取り組み"] = filterDataToNodes(jsonData["今年の取り組み"], nodes);
+                        } catch (error) {
+                            console.error('Error parsing nodes.json:', error);
+                            alert('Error parsing nodes.json. Please check the file format.');
+                        }
+                    });
+                }
+            }
+
+            if (jsonFilePromise) {
+                jsonFilePromise.then(() => {
+                    updateNodeSelects(Array.from(nodes));
+                });
+            } else {
+                updateNodeSelects(Array.from(nodes));
+            }
+        }
+
+        function parseCSV(text) {
+            const lines = text.trim().split('\n');
+            const headers = lines[0].split(',').slice(1);
+            const data = {};
+            
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',');
+                const source = values[0];
+                data[source] = {};
+                
+                for (let j = 1; j < values.length; j++) {
+                    const target = headers[j-1];
+                    const value = parseFloat(values[j]);
+                    if (value > 0 && source !== target) {
+                        data[source][target] = value;
+                    }
+                }
+            }
+            
+            return data;
+        }
+
+        function createGraph(data) {
+            const nodes = new Set();
+            const links = [];
+            
+            for (const source in data) {
+                nodes.add(source);
+                for (const target in data[source]) {
+                    nodes.add(target);
+                    links.push({
+                        source: source,
+                        target: target,
+                        value: data[source][target]
+                    });
+                }
+            }
+            
+            return {
+                nodes: Array.from(nodes).map(id => ({id})),
+                links: links
+            };
+        }
+
+        function updateGraph(nodeA, nodeB, strength) {
+            if (!graphData || !jsonData) return;
+
+            showLoading();
+
+            d3.select("#graph").selectAll("*").remove();
+
+            svg = d3.select("#graph")
+                .append("svg")
+                .attr("width", "100%")
+                .attr("height", "100%");
+
+            const width = svg.node().getBoundingClientRect().width;
+            const height = svg.node().getBoundingClientRect().height;
+
+            const idealLinkDistance = Math.sqrt(width * height / graphData.nodes.length) * strength;
+
+            const simulation = d3.forceSimulation(graphData.nodes)
+                .force("link", d3.forceLink(graphData.links)
+                    .id(d => d.id)
+                    .distance(idealLinkDistance)
+                    .strength(1))
+                .force("charge", d3.forceManyBody()
+                    .strength(-idealLinkDistance * 1.5))
+                .force("center", d3.forceCenter(width / 2, height / 2))
+                .force("x", d3.forceX(width / 2).strength(0.1))
+                .force("y", d3.forceY(height / 2).strength(0.1));
+
+            const link = svg.append("g")
+                .attr("class", "links")
+                .selectAll("line")
+                .data(graphData.links)
+                .enter().append("line")
+                .attr("stroke-width", d => Math.sqrt(d.value));
+
+            const nodeData = jsonData[currentDataType];
+            const nodeSizes = calculateNodeSizes(nodeData);
+            const nodeSizeFactor = parseFloat(document.getElementById('nodeSizeSlider').value);
+
+            const currentType = document.getElementById('dataTypeSelect').value;
+            const sourceNodes = new Set(jsonData[currentType][nodeA] || []);
+            const targetNodes = new Set(jsonData[currentType][nodeB] || []);
+
+            const node = svg.append("g")
+                .attr("class", "nodes")
+                .selectAll("circle")
+                .data(graphData.nodes)
+                .enter().append("circle")
+                .attr("r", d => nodeSizes[d.id] * nodeSizeFactor)
+                .attr("fill", d => {
+                    if (sourceNodes.has(d.id)) return "red";
+                    if (targetNodes.has(d.id)) return "blue";
+                    return "green";
+                })
+                .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended))
+                .on("mouseover", highlightConnections)
+                .on("mouseout", resetHighlight);
+
+            const label = svg.append("g")
+                .attr("class", "labels")
+                .selectAll("text")
+                .data(graphData.nodes)
+                .enter().append("text")
+                .attr("class", "node-label")
+                .attr("dx", 12)
+                .attr("dy", 4)
+                .text(d => d.id)
+                .style("font-weight", "normal")
+                .style("font-size", "12px");
+
+            simulation.on("tick", () => {
+                link
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+
+                node
+                    .attr("cx", d => d.x)
+                    .attr("cy", d => d.y);
+
+                label
+                    .attr("x", d => d.x)
+                    .attr("y", d => d.y);
+            });
+
+            function dragstarted(event, d) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
+
+            function dragended(event, d) {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+
+            zoom = d3.zoom()
+                .on('zoom', (event) => {
+                    svg.selectAll('g').attr('transform', event.transform);
+                });
+
+            svg.call(zoom);
+
+            hideLoading();
+        }
+
+        function calculateNodeSizes(nodeData) {
+            if (!graphData || !graphData.links) return {};
+            const sizes = {};
+            const adjacencyCount = {};
+
+            // Initialize adjacency count for each node
+            graphData.nodes.forEach(node => {
+                adjacencyCount[node.id] = 0;
+            });
+
+            // Count the number of adjacent nodes for each node
+            graphData.links.forEach(link => {
+                adjacencyCount[link.source.id]++;
+                adjacencyCount[link.target.id]++;
+            });
+
+            // Find the min and max adjacency counts
+            const minAdjacency = Math.min(...Object.values(adjacencyCount));
+            const maxAdjacency = Math.max(...Object.values(adjacencyCount));
+
+            // Assign sizes based on adjacency count, scaled between 1 and 3
+            for (const node in adjacencyCount) {
+                sizes[node] = 1 + 2 * (adjacencyCount[node] - minAdjacency) / (maxAdjacency - minAdjacency);
+            }
+
+            return sizes;
+        }
+
+        function updateNodeSize() {
+            if (!graphData || !jsonData) return;
+            const nodeData = jsonData[currentDataType];
+            const nodeSizes = calculateNodeSizes(nodeData);
+            const factor = parseFloat(document.getElementById('nodeSizeSlider').value);
+            d3.select("#graph")
+                .selectAll("circle")
+                .transition()
+                .duration(300)
+                .attr("r", d => nodeSizes[d.id] * factor);
+        }   
+
+        function highlightConnections(event, d) {
+            d3.select("#graph")
+                .selectAll("line")
+                .attr("stroke-width", l => (l.source.id === d.id || l.target.id === d.id) ? 4 : 1)
+                .attr("stroke-opacity", l => (l.source.id === d.id || l.target.id === d.id) ? 1 : 0.3);
+
+            d3.select("#graph")
+                .selectAll("circle")
+                .attr("r", n => (n.id === d.id || graphData.links.some(l => 
+                    (l.source.id === d.id && l.target.id === n.id) || 
+                    (l.target.id === d.id && l.source.id === n.id))) 
+                    ? nodeSizes[n.id] * nodeSizeFactor * 1.5 : nodeSizes[n.id] * nodeSizeFactor)
+                .attr("fill-opacity", n => (n.id === d.id || graphData.links.some(l => 
+                    (l.source.id === d.id && l.target.id === n.id) || 
+                    (l.target.id === d.id && l.source.id === n.id))) ? 1 : 0.3);
+
+            d3.select("#graph")
+                .selectAll(".node-label")
+                .style("font-weight", n => (n.id === d.id || graphData.links.some(l => 
+                    (l.source.id === d.id && l.target.id === n.id) || 
+                    (l.target.id === d.id && l.source.id === n.id))) ? "bold" : "normal")
+                .style("font-size", n => (n.id === d.id || graphData.links.some(l => 
+                    (l.source.id === d.id && l.target.id === n.id) || 
+                    (l.target.id === d.id && l.source.id === n.id))) ? "14px" : "12px");
+        }
+
+        function resetHighlight() {
+            d3.select("#graph")
+                .selectAll("line")
+                .attr("stroke-width", 1)
+                .attr("stroke-opacity", 0.6);
+
+            d3.select("#graph")
+                .selectAll("circle")
+                .attr("r", d => nodeSizes[d.id] * nodeSizeFactor)
+                .attr("fill-opacity", 1);
+
+            d3.select("#graph")
+                .selectAll(".node-label")
+                .style("font-weight", "normal")
+                .style("font-size", "12px");
+        }
+
+        function findShortestPath(start, end) {
+            const queue = [[start]];
+            const visited = new Set();
+
+            while (queue.length > 0) {
+                const path = queue.shift();
+                const node = path[path.length - 1];
+
+                if (node === end) {
+                    return path;
+                }
+
+                if (!visited.has(node)) {
+                    visited.add(node);
+                    const neighbors = graphData.links
+                        .filter(link => link.source.id === node || link.target.id === node)
+                        .map(link => link.source.id === node ? link.target.id : link.source.id);
+
+                    for (const neighbor of neighbors) {
+                        queue.push([...path, neighbor]);
+                    }
+                }
+            }
+
+            return null; // No path found
+        }
+
+        function highlightShortestPath(path) {
+            if (!path) {
+                alert("No path found between the selected nodes.");
+                document.getElementById('shortestPathText').textContent = "No path found.";
+                return;
+            }
+
+            // Reset all nodes and links
+            d3.select("#graph")
+                .selectAll("line")
+                .transition()
+                .duration(300)
+                .attr("stroke", "#999")
+                .attr("stroke-width", 1)
+                .attr("stroke-opacity", 0.3);
+
+            d3.select("#graph")
+                .selectAll("circle")
+                .transition()
+                .duration(300)
+                .attr("stroke", "#fff")
+                .attr("stroke-width", 1.5)
+                .attr("fill-opacity", 0.3);
+
+            // Highlight the path
+            d3.select("#graph")
+                .selectAll("line")
+                .filter(d => path.includes(d.source.id) && path.includes(d.target.id))
+                .transition()
+                .duration(500)
+                .attr("stroke", "#FF4500")  // Bright orange-red
+                .attr("stroke-width", 10)
+                .attr("stroke-opacity", 1);
+
+            d3.select("#graph")
+                .selectAll("circle")
+                .filter(d => path.includes(d.id))
+                .transition()
+                .duration(500)
+                .attr("stroke", "#FF4500")  // Bright orange-red
+                .attr("stroke-width", 3)
+                .attr("fill-opacity", 1);
+
+            // Bring highlighted elements to front
+            d3.select("#graph").selectAll(".links").raise();
+            d3.select("#graph").selectAll(".nodes").raise();
+
+            const pathText = "Shortest path: " + path.join(" → ");
+            document.getElementById('shortestPathText').textContent = pathText;
+        }
+
+        function clearShortestPath() {
+            d3.select("#graph")
+                .selectAll("line")
+                .transition()
+                .duration(500)
+                .attr("stroke", "#999")
+                .attr("stroke-width", 1)
+                .attr("stroke-opacity", 0.6);
+
+            d3.select("#graph")
+                .selectAll("circle")
+                .transition()
+                .duration(500)
+                .attr("stroke", "#fff")
+                .attr("stroke-width", 1.5)
+                .attr("fill-opacity", 1);
+            
+            document.getElementById('shortestPathText').textContent = "";
+        }
+
+        async function loadGraphData(nodeA, nodeB) {
+            if (!jsonData) {
+                alert('Please select a folder with nodes.json file first.');
+                return;
+            }
+
+            showLoading();
+
+            const fileName = `${nodeA}_${nodeB}.csv`;
+            const fileName2 = `${nodeB}_${nodeA}.csv`;
+            let fileToUse = fileName in dataFiles ? fileName : (fileName2 in dataFiles ? fileName2 : null);
+            
+            if (fileToUse) {
+                try {
+                    const text = await dataFiles[fileToUse].text();
+                    const parsedData = parseCSV(text);
+                    graphData = createGraph(parsedData);
+                    updateGraph(nodeA, nodeB, parseFloat(document.getElementById('linkDistance').value));
+                } catch (error) {
+                    console.error('Error loading CSV:', error);
+                    alert(`Error loading ${fileToUse}. Please make sure the file is valid.`);
+                }
+            } else {
+                alert(`File ${fileName} or ${fileName2} not found. Please make sure you've selected the correct folder with CSV files.`);
+            }
+
+            hideLoading();
+        }
+
+        function updateNodeSelects(nodeList) {
+            const selectA = document.getElementById('selectA');
+            const selectB = document.getElementById('selectB');
+            const selectSource = document.getElementById('selectSource');
+            const selectTarget = document.getElementById('selectTarget');
+
+            // Clear all selects
+            [selectA, selectB, selectSource, selectTarget].forEach(select => {
+                select.innerHTML = '';
+            });
+
+            // Populate A and B selects with all nodes
+            nodeList.forEach(node => {
+                [selectA, selectB].forEach(select => {
+                    const option = document.createElement('option');
+                    option.value = node;
+                    option.textContent = node;
+                    select.appendChild(option);
+                });
+            });
+
+            // Set default values for A and B if possible
+            if (nodeList.length >= 2) {
+                selectA.value = nodeList[0];
+                selectB.value = nodeList[1];
+            }
+
+            // Update Source and Target options based on current selection
+            updateSourceTargetOptions();
+        }
+
+        function updateSourceTargetOptions() {
+            const currentType = document.getElementById('dataTypeSelect').value;
+            const nodeA = document.getElementById('selectA').value;
+            const nodeB = document.getElementById('selectB').value;
+            const selectSource = document.getElementById('selectSource');
+            const selectTarget = document.getElementById('selectTarget');
+
+            // Clear current options
+            selectSource.innerHTML = '';
+            selectTarget.innerHTML = '';
+
+            if (jsonData && jsonData[currentType]) {
+                const sourceNodes = jsonData[currentType][nodeA] || [];
+                const targetNodes = jsonData[currentType][nodeB] || [];
+
+                sourceNodes.forEach(node => {
+                    if (!targetNodes.includes(node)) {
+                        const option = document.createElement('option');
+                        option.value = node;
+                        option.textContent = node;
+                        selectSource.appendChild(option);
+                    }
+                });
+
+                targetNodes.forEach(node => {
+                    if (!sourceNodes.includes(node)) {
+                        const option = document.createElement('option');
+                        option.value = node;
+                        option.textContent = node;
+                        selectTarget.appendChild(option);
+                    }
+                });
+            }
+        }
+
+        function filterDataToNodes(data, nodes) {
+            return Object.fromEntries(
+                Object.entries(data).filter(([key]) => nodes.includes(key))
+            );
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function resetZoom() {
+            if (svg && zoom) {
+                svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
+            }
+        }
+
+        document.getElementById('findPathButton').addEventListener('click', () => {
+            const source = document.getElementById('selectSource').value;
+            const target = document.getElementById('selectTarget').value;
+            if (source && target) {
+                const path = findShortestPath(source, target);
+                highlightShortestPath(path);
+            } else {
+                alert('Please select both source and target nodes.');
+            }
+        });
+
+        document.getElementById('clearPathButton').addEventListener('click', clearShortestPath);
+
+        document.getElementById('dataTypeSelect').addEventListener('change', () => {
+            currentDataType = document.getElementById('dataTypeSelect').value;
+            const nodeA = document.getElementById('selectA').value;
+            const nodeB = document.getElementById('selectB').value;
+            if (nodeA && nodeB) {
+                updateGraph(nodeA, nodeB, parseFloat(document.getElementById('linkDistance').value));
+            }
+        });
+
+        document.getElementById('folderInput').addEventListener('change', handleFolderSelect);
+
+        document.getElementById('computeButton').addEventListener('click', () => {
+            if (!jsonData) {
+                alert('Please select a folder with nodes.json file first.');
+                return;
+            }
+            const nodeA = document.getElementById('selectA').value;
+            const nodeB = document.getElementById('selectB').value;
+            if (nodeA && nodeB) {
+                loadGraphData(nodeA, nodeB);
+            } else {
+                alert('Please select both A and B nodes.');
+            }
+        });
+
+        document.getElementById('linkDistance').addEventListener('input', () => {
+            const strength = parseFloat(document.getElementById('linkDistance').value);
+            const nodeA = document.getElementById('selectA').value;
+            const nodeB = document.getElementById('selectB').value;
+            updateGraph(nodeA, nodeB, strength);
+        });
+
+        document.getElementById('nodeSizeSlider').addEventListener('input', updateNodeSize);
+
+        document.getElementById('resetZoomButton').addEventListener('click', resetZoom);
+
+        document.getElementById('dataTypeSelect').addEventListener('change', () => {
+            currentDataType = document.getElementById('dataTypeSelect').value;
+            updateGraph(
+                document.getElementById('selectA').value,
+                document.getElementById('selectB').value,
+                parseFloat(document.getElementById('linkDistance').value)
+            );
+        });
+
+        document.getElementById('selectA').addEventListener('change', () => {
+            updateGraph(
+                document.getElementById('selectA').value,
+                document.getElementById('selectB').value,
+                parseFloat(document.getElementById('linkDistance').value)
+            );
+        });
+
+        document.getElementById('selectB').addEventListener('change', () => {
+            updateGraph(
+                document.getElementById('selectA').value,
+                document.getElementById('selectB').value,
+                parseFloat(document.getElementById('linkDistance').value)
+            );
+        });
+
+    </script>
+</body>
+</html>
