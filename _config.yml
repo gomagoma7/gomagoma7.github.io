@@ -4,7 +4,7 @@
 
 title: Junya Honda # the website title (if blank, full name will be used instead)
 first_name: Junya
-middle_name: 
+middle_name: G.
 last_name: Honda
 email: honda.junya.qt[at]tut.jp
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
@@ -13,9 +13,9 @@ footer_text: >
   Powered by <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio">al-folio</a> theme.
   Hosted by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.
   Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a>.
-keywords: junya, jekyll-theme, academic-website, portfolio-website, ai, llm, neural-information-dynamics # add your own keywords or leave empty
+keywords: junya, ai, llm, llm-agent, computer-science, neural-information-dynamics, eeg, ieeg, epilepsy, graph-neural-network, explainable-ai, xai, counterfactual-explanation # add your own keywords or leave empty
 lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
-icon: ⚛️ # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
+icon: ♌ # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
 
 url: 'https://gomagoma7.github.io' # the base hostname & protocol for your site
 baseurl: / # the subpath of your site, e.g. /blog/. Leave blank for root
@@ -27,8 +27,8 @@ impressum_path: # set to path to include impressum link in the footer, use the s
 # -----------------------------------------------------------------------------
 
 # repo color theme
-repo_theme_light: buefy # https://github.com/anuraghazra/github-readme-stats/blob/master/themes/README.md
-repo_theme_dark: nightowl # https://github.com/anuraghazra/github-readme-stats/blob/master/themes/README.md
+repo_theme_light: catppuccin_latte # https://github.com/anuraghazra/github-readme-stats/blob/master/themes/README.md
+repo_theme_dark: shades-of-purple # https://github.com/anuraghazra/github-readme-stats/blob/master/themes/README.md
 repo_trophies:
   enabled: false
   theme_light: flat # https://github.com/ryo-ma/github-profile-trophy
@@ -101,7 +101,7 @@ whatsapp_number: # your WhatsApp number (full phone number in international form
 wikidata_id: # your wikidata id
 wikipedia_id: # your wikipedia id (Case sensitive)
 work_url: # work page URL
-x_username: # your X handle
+x_username: Jupyter_Mokusei # your X handle
 youtube_id: # your youtube channel id (youtube.com/@<youtube_id>)
 zotero_username: # your zotero username
 
@@ -126,8 +126,8 @@ bing_site_verification: # out your bing-site-verification ID (Bing Webmaster)
 # Blog
 # -----------------------------------------------------------------------------
 
-blog_name: MyBlog # blog_name will be displayed in your blog page
-blog_description: memo
+blog_name: Jupiter # blog_name will be displayed in your blog page
+blog_description: Just note for me. Now developing.
 permalink: /blog/:year/:title/
 
 # Pagination

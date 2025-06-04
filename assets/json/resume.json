@@ -36,11 +36,22 @@
       "location": "Aichi, Japan",
       "url": "https://www.tut.ac.jp/",
       "area": "",
+      "studyType": "Master degree",
+      "startDate": "2025-04-01",
+      "endDate": "now",
+      "score": "",
+      "courses": ["Computer Science and Engineering"]
+    },
+    {
+      "institution": "Toyohashi University of Technology",
+      "location": "Aichi, Japan",
+      "url": "https://www.tut.ac.jp/",
+      "area": "",
       "studyType": "Bachelor degree",
       "startDate": "2023-04-01",
-      "endDate": "1905-01-01",
+      "endDate": "2025-03-31",
       "score": "",
-      "courses": ["Theory of Relativity"]
+      "courses": ["Computer Science and Engineering"]
     },
     {
       "institution": "Natinal Institute of Technology, Kumamoto College",
@@ -134,13 +145,34 @@
       ]
     },
     {
+      "name": "AI for Neuroscience",
+      "icon": "fa-solid fa-tag",
+      "keywords": [
+        "Graph Neural Network",
+        "XAI (eXplainable AI)",
+        "Counterfactual Explanation"
+      ]
+    },
+    {
       "name": "Natural Language Processing",
       "icon": "fa-solid fa-tag",
       "keywords": [
         "Large Language Model",
-        "Concept"
+        "LLM Agent",
+        "R"
+      ]
+    },
+    {
+      "name": "Just Interest",
+      "icon": "fa-solid fa-tag",
+      "keywords": [
+        "Optimal Transport", 
+        "Collective Predictive Coding",
+        "",
+        ""
       ]
     }
+
   ],
   "references": [
     {}

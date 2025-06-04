@@ -4,16 +4,27 @@
     - name: Full Name
       value: Junay Honda
     - name: Date of Birth
-      value: 27th July 2002
+      value: 28th July 2002
     - name: Languages
       value: Japanese, English
 
 - title: Education
   type: time_table
   contents:
+    - title: Master
+      institution: Toyohashi University of Technology, Aichi, Japan
+      year: Current
+      description:
+        - Uehara Lab.
+        - Neural Information Dynamics Labratory
+        - title: Description 3.
+          contents:
+            - Sub-description 1.
+            - Sub-description 2.
     - title: Bachelor
       institution: Toyohashi University of Technology, Aichi, Japan
-      year: Now
+      year: 2025
+      month: 03
       description:
         - Description 1.
         - Description 2.
@@ -24,6 +35,7 @@
     - title: Fandamental degree
       institution: Natinal Institute of Technology, Kumamoto College, Kumamoto, Japan
       year: 2023
+      month: 03
       description:
         - Description 1.
         - Description 2.
