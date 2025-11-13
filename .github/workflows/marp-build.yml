@@ -1,0 +1,150 @@
+name: Build Marp Slides
+
+on:
+  push:
+    paths:
+      - '_slides/**'
+      - '.github/workflows/marp-build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-slides:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Marp CLI
+        run: npm install -g @marp-team/marp-cli
+
+      - name: Convert Marp slides to HTML and Images
+        run: |
+          mkdir -p assets/slides
+
+          for file in _slides/*.md; do
+            if [ -f "$file" ]; then
+              filename=$(basename "$file" .md)
+              echo "Processing $filename..."
+
+              # Create output directory
+              mkdir -p "assets/slides/${filename}"
+              mkdir -p "assets/slides/${filename}/thumbnails"
+
+              # Generate HTML version (for fullscreen view)
+              marp "$file" \
+                -o "assets/slides/${filename}.html" \
+                --html \
+                --allow-local-files
+
+              # Generate slide images (PNG format, 1920x1080)
+              marp "$file" \
+                --images png \
+                -o "assets/slides/${filename}/" \
+                --image-scale 2
+
+              # Rename generated images to slide-XX.png format
+              cd "assets/slides/${filename}"
+              counter=1
+              for img in *.png; do
+                if [ -f "$img" ]; then
+                  newname=$(printf "slide-%02d.png" $counter)
+                  mv "$img" "$newname"
+                  echo "Renamed $img to $newname"
+                  counter=$((counter + 1))
+                fi
+              done
+              cd ../../..
+
+              echo "Generated $(($counter - 1)) slides for $filename"
+            fi
+          done
+
+      - name: Generate thumbnails
+        run: |
+          # Install Sharp CLI for image processing
+          npm install -g sharp-cli
+
+          for dir in assets/slides/*/; do
+            if [ -d "$dir" ]; then
+              dirname=$(basename "$dir")
+              if [ "$dirname" != "thumbnails" ] && [ -f "${dir}slide-01.png" ]; then
+                echo "Generating thumbnails for $dirname..."
+                mkdir -p "${dir}thumbnails"
+
+                for img in ${dir}slide-*.png; do
+                  if [ -f "$img" ]; then
+                    imgname=$(basename "$img")
+                    sharp -i "$img" \
+                      -o "${dir}thumbnails/${imgname}" \
+                      resize 300 \
+                      -- \
+                      jpeg --quality 80
+                  fi
+                done
+              fi
+            fi
+          done
+
+      - name: Generate metadata
+        run: |
+          for dir in assets/slides/*/; do
+            if [ -d "$dir" ]; then
+              dirname=$(basename "$dir")
+              if [ "$dirname" != "thumbnails" ] && [ -f "${dir}slide-01.png" ]; then
+                echo "Generating metadata for $dirname..."
+
+                # Count slides
+                slide_count=$(ls ${dir}slide-*.png 2>/dev/null | wc -l)
+
+                # Generate metadata.json
+                cat > "${dir}metadata.json" <<EOF
+{
+  "title": "${dirname}",
+  "author": "Junya Honda",
+  "date": "$(date -I)",
+  "totalSlides": ${slide_count},
+  "slides": [
+EOF
+
+                # Add slide entries
+                for i in $(seq 1 $slide_count); do
+                  slide_num=$(printf "%02d" $i)
+                  echo "    {" >> "${dir}metadata.json"
+                  echo "      \"number\": $i," >> "${dir}metadata.json"
+                  echo "      \"image\": \"slide-${slide_num}.png\"," >> "${dir}metadata.json"
+                  echo "      \"thumbnail\": \"thumbnails/slide-${slide_num}.png\"," >> "${dir}metadata.json"
+                  echo "      \"title\": \"Slide $i\"" >> "${dir}metadata.json"
+                  if [ $i -eq $slide_count ]; then
+                    echo "    }" >> "${dir}metadata.json"
+                  else
+                    echo "    }," >> "${dir}metadata.json"
+                  fi
+                done
+
+                echo "  ]" >> "${dir}metadata.json"
+                echo "}" >> "${dir}metadata.json"
+
+                echo "Metadata generated for $dirname ($slide_count slides)"
+              fi
+            fi
+          done
+
+      - name: Commit generated files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add assets/slides/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto-generate Marp slides [skip ci]"
+            git push
+          fi

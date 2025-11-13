@@ -2,7 +2,7 @@
   type: map
   contents:
     - name: Full Name
-      value: Junay Honda
+      value: Junya Honda
     - name: Date of Birth
       value: 28th July 2002
     - name: Languages
@@ -32,8 +32,8 @@
           contents:
             - Sub-description 1.
             - Sub-description 2.
-    - title: Fandamental degree
-      institution: Natinal Institute of Technology, Kumamoto College, Kumamoto, Japan
+    - title: Fundamental degree
+      institution: National Institute of Technology, Kumamoto College, Kumamoto, Japan
       year: 2023
       month: 03
       description:
