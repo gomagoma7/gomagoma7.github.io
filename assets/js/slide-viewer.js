@@ -29,8 +29,8 @@ class SlideViewer {
       this.setupEventListeners();
       this.showSlide(0);
     } catch (error) {
-      console.error('Failed to initialize slide viewer:', error);
-      this.showError('Failed to load slides. Please try again later.');
+      console.error("Failed to initialize slide viewer:", error);
+      this.showError("Failed to load slides. Please try again later.");
     }
   }
 
@@ -50,31 +50,31 @@ class SlideViewer {
       this.updateCounter();
       this.renderThumbnails();
     } catch (error) {
-      console.error('Error loading metadata:', error);
+      console.error("Error loading metadata:", error);
       throw error;
     }
   }
 
   setupEventListeners() {
     // Navigation buttons
-    this.prevBtn.addEventListener('click', () => this.previousSlide());
-    this.nextBtn.addEventListener('click', () => this.nextSlide());
+    this.prevBtn.addEventListener("click", () => this.previousSlide());
+    this.nextBtn.addEventListener("click", () => this.nextSlide());
 
     // Fullscreen button
-    this.fullscreenBtn.addEventListener('click', () => this.toggleFullscreen());
+    this.fullscreenBtn.addEventListener("click", () => this.toggleFullscreen());
 
     // Keyboard navigation
-    document.addEventListener('keydown', (e) => this.handleKeyPress(e));
+    document.addEventListener("keydown", (e) => this.handleKeyPress(e));
 
     // Swipe gestures for mobile
     let touchStartX = 0;
     let touchEndX = 0;
 
-    this.slideImage.addEventListener('touchstart', (e) => {
+    this.slideImage.addEventListener("touchstart", (e) => {
       touchStartX = e.changedTouches[0].screenX;
     });
 
-    this.slideImage.addEventListener('touchend', (e) => {
+    this.slideImage.addEventListener("touchend", (e) => {
       touchEndX = e.changedTouches[0].screenX;
       this.handleSwipe(touchStartX, touchEndX);
     });
@@ -84,29 +84,29 @@ class SlideViewer {
     // Only handle if this slide viewer is visible
     if (!this.isVisible()) return;
 
-    switch(e.key) {
-      case 'ArrowLeft':
+    switch (e.key) {
+      case "ArrowLeft":
         e.preventDefault();
         this.previousSlide();
         break;
-      case 'ArrowRight':
+      case "ArrowRight":
         e.preventDefault();
         this.nextSlide();
         break;
-      case 'Home':
+      case "Home":
         e.preventDefault();
         this.showSlide(0);
         break;
-      case 'End':
+      case "End":
         e.preventDefault();
         this.showSlide(this.totalSlides - 1);
         break;
-      case 'f':
-      case 'F':
+      case "f":
+      case "F":
         e.preventDefault();
         this.toggleFullscreen();
         break;
-      case 'Escape':
+      case "Escape":
         if (document.fullscreenElement) {
           document.exitFullscreen();
         }
@@ -137,12 +137,12 @@ class SlideViewer {
     const imagePath = `/assets/slides/${this.slideId}/${slide.image}`;
     this.slideImage.src = imagePath;
     this.slideImage.alt = slide.title || `Slide ${index + 1}`;
-    this.slideImage.classList.add('loaded');
+    this.slideImage.classList.add("loaded");
 
     // Hide loading indicator
-    const loading = this.container.querySelector('.slide-loading');
+    const loading = this.container.querySelector(".slide-loading");
     if (loading) {
-      loading.style.display = 'none';
+      loading.style.display = "none";
     }
 
     // Update UI
@@ -172,8 +172,8 @@ class SlideViewer {
   }
 
   updateCounter() {
-    const currentNum = this.counter.querySelector('.current-slide-num');
-    const totalNum = this.counter.querySelector('.total-slides-num');
+    const currentNum = this.counter.querySelector(".current-slide-num");
+    const totalNum = this.counter.querySelector(".total-slides-num");
 
     if (currentNum) currentNum.textContent = this.currentSlide + 1;
     if (totalNum) totalNum.textContent = this.totalSlides;
@@ -190,26 +190,26 @@ class SlideViewer {
   }
 
   renderThumbnails() {
-    this.thumbnailsContainer.innerHTML = '';
+    this.thumbnailsContainer.innerHTML = "";
 
     this.slides.forEach((slide, index) => {
-      const thumbnailItem = document.createElement('div');
-      thumbnailItem.className = 'thumbnail-item';
+      const thumbnailItem = document.createElement("div");
+      thumbnailItem.className = "thumbnail-item";
       thumbnailItem.dataset.slideIndex = index;
 
-      const img = document.createElement('img');
+      const img = document.createElement("img");
       img.src = `/assets/slides/${this.slideId}/${slide.thumbnail}`;
       img.alt = `Slide ${index + 1}`;
-      img.loading = 'lazy';
+      img.loading = "lazy";
 
-      const number = document.createElement('div');
-      number.className = 'thumbnail-number';
+      const number = document.createElement("div");
+      number.className = "thumbnail-number";
       number.textContent = index + 1;
 
       thumbnailItem.appendChild(img);
       thumbnailItem.appendChild(number);
 
-      thumbnailItem.addEventListener('click', () => {
+      thumbnailItem.addEventListener("click", () => {
         this.showSlide(index);
       });
 
@@ -221,25 +221,25 @@ class SlideViewer {
   updateThumbnails() {
     this.thumbnails.forEach((thumbnail, index) => {
       if (index === this.currentSlide) {
-        thumbnail.classList.add('active');
+        thumbnail.classList.add("active");
         // Scroll thumbnail into view
-        thumbnail.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        thumbnail.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
       } else {
-        thumbnail.classList.remove('active');
+        thumbnail.classList.remove("active");
       }
     });
   }
 
   toggleFullscreen() {
     if (!document.fullscreenElement) {
-      this.container.requestFullscreen().catch(err => {
-        console.error('Error attempting to enable fullscreen:', err);
+      this.container.requestFullscreen().catch((err) => {
+        console.error("Error attempting to enable fullscreen:", err);
       });
-      this.container.classList.add('fullscreen');
+      this.container.classList.add("fullscreen");
       this.fullscreenBtn.innerHTML = '<i class="fa-solid fa-compress"></i>';
     } else {
       document.exitFullscreen();
-      this.container.classList.remove('fullscreen');
+      this.container.classList.remove("fullscreen");
       this.fullscreenBtn.innerHTML = '<i class="fa-solid fa-expand"></i>';
     }
   }
@@ -250,7 +250,7 @@ class SlideViewer {
   }
 
   showError(message) {
-    const loading = this.container.querySelector('.slide-loading');
+    const loading = this.container.querySelector(".slide-loading");
     if (loading) {
       loading.innerHTML = `<i class="fa-solid fa-exclamation-triangle"></i> ${message}`;
     }
@@ -263,13 +263,13 @@ function initSlideViewer(slideId) {
 }
 
 // Auto-initialize all slide viewers on page load
-document.addEventListener('DOMContentLoaded', function() {
-  const viewers = document.querySelectorAll('[data-slide-id]');
-  viewers.forEach(viewer => {
+document.addEventListener("DOMContentLoaded", function () {
+  const viewers = document.querySelectorAll("[data-slide-id]");
+  viewers.forEach((viewer) => {
     const slideId = viewer.dataset.slideId;
-    if (!viewer.classList.contains('initialized')) {
+    if (!viewer.classList.contains("initialized")) {
       new SlideViewer(slideId);
-      viewer.classList.add('initialized');
+      viewer.classList.add("initialized");
     }
   });
 });

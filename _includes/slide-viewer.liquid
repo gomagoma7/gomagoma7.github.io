@@ -1,7 +1,7 @@
 <!-- Slide Viewer Component -->
 {% assign slide_id = include.slide_id %}
-{% assign slide_title = include.title | default: "Slides" %}
-{% assign slide_data_file = "assets/slides/" | append: slide_id | append: "/metadata.json" %}
+{% assign slide_title = include.title | default: 'Slides' %}
+{% assign slide_data_file = 'assets/slides/' | append: slide_id | append: '/metadata.json' %}
 
 <div class="slide-viewer-container" id="slide-viewer-{{ slide_id }}" data-slide-id="{{ slide_id }}">
   <div class="slide-viewer-header">
@@ -10,7 +10,13 @@
       <button class="slide-btn" id="fullscreen-btn-{{ slide_id }}" title="Fullscreen" aria-label="Toggle fullscreen">
         <i class="fa-solid fa-expand"></i>
       </button>
-      <a href="{{ '/assets/slides/' | append: slide_id | append: '.html' | relative_url }}" target="_blank" class="slide-btn" title="Open in new tab" aria-label="Open slides in new tab">
+      <a
+        href="{{ '/assets/slides/' | append: slide_id | append: '.html' | relative_url }}"
+        target="_blank"
+        class="slide-btn"
+        title="Open in new tab"
+        aria-label="Open slides in new tab"
+      >
         <i class="fa-solid fa-external-link-alt"></i>
       </a>
     </div>
@@ -18,10 +24,8 @@
 
   <div class="slide-viewer-main">
     <div class="slide-display">
-      <div class="slide-loading">
-        <i class="fa-solid fa-spinner fa-spin"></i> Loading slides...
-      </div>
-      <img id="current-slide-{{ slide_id }}" class="current-slide" alt="Current slide" />
+      <div class="slide-loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading slides...</div>
+      <img id="current-slide-{{ slide_id }}" class="current-slide" alt="Current slide">
     </div>
 
     <div class="slide-navigation">
@@ -47,10 +51,10 @@
 </div>
 
 <!-- Load Swiper CSS from CDN -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 
 <!-- Load custom slide viewer CSS -->
-<link rel="stylesheet" href="{{ '/assets/css/slide-viewer.css' | relative_url }}" />
+<link rel="stylesheet" href="{{ '/assets/css/slide-viewer.css' | relative_url }}">
 
 <!-- Load Swiper JS from CDN -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -60,7 +64,7 @@
 
 <script>
   // Initialize slide viewer when DOM is ready
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     initSlideViewer('{{ slide_id }}');
   });
 </script>
