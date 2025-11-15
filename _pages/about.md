@@ -23,6 +23,7 @@ I'm Junya Honda, a Master's student in Computer Science at Toyohashi University 
 I work at the Neural Information Dynamics Laboratory, where I analyze brain signals and explore neural mechanisms using computational approaches.
 
 My research focuses on:
+
 - **Brain Signal Analysis**: Working with iEEG (intracranial EEG) data to understand neural dynamics
 - **Graph Neural Networks (GNN)**: Applying graph-based deep learning to brain connectivity analysis
 - **Explainable AI (XAI)**: Making neural network predictions interpretable and transparent
