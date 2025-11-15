@@ -6,8 +6,8 @@ subtitle: Master's Student | Computer Science | Neural Information Dynamics Lab
 
 profile:
   align: right
-  image: prof_pic.jpg
-  image_circular: false # crops the image to make it circular
+  image: assets/img/prof_pic.jpg
+  image_circular: true # crops the image to make it circular
   more_info: >
     <p>Neural Information Dynamics Laboratory</p>
     <p>Toyohashi University of Technology</p>
