@@ -69,8 +69,9 @@ jobs:
 
       - name: Generate thumbnails
         run: |
-          # Install Sharp CLI for image processing
-          npm install -g sharp-cli
+          # Install ImageMagick for image processing
+          sudo apt-get update
+          sudo apt-get install -y imagemagick
 
           for dir in assets/slides/*/; do
             if [ -d "$dir" ]; then
@@ -82,11 +83,8 @@ jobs:
                 for img in ${dir}slide-*.png; do
                   if [ -f "$img" ]; then
                     imgname=$(basename "$img")
-                    sharp -i "$img" \
-                      -o "${dir}thumbnails/${imgname}" \
-                      resize 300 \
-                      -- \
-                      jpeg --quality 80
+                    convert "$img" -resize 300x169 "${dir}thumbnails/${imgname}"
+                    echo "Created thumbnail: ${imgname}"
                   fi
                 done
               fi
