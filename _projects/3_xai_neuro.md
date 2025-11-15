@@ -1,51 +1,20 @@
 ---
 layout: page
-title: Explainable AI for Neuroscience
-description: Making neural network predictions interpretable for clinical use
-img: assets/img/projects/xai-thumbnail.jpg
+title: Sample Project 3
+description: A fun sample project
+img: assets/img/projects/project3.jpg
 importance: 3
-category: work
+category: fun
 related_publications: false
 ---
 
-## Overview
+## Fun Sample Project
 
-Developing explainable AI methods to understand what neural networks learn from brain data, with a focus on clinical interpretability.
+This is a sample project in the "fun" category.
 
-## Challenge
+You can also add regular text between your rows of images.
+Say you wanted to write a little bit about your project before you posted the rest of the images.
+You describe how you toiled, sweated, *bled* for your project, and then... you reveal its glory in the next row of images.
 
-While deep learning models can achieve high accuracy on neuroscience tasks, their predictions are often not interpretable. This is a critical issue for clinical applications where doctors need to understand *why* a model makes a specific prediction.
-
-## Approach
-
-### 1. Attention Mechanisms
-- Visualize which brain regions the model focuses on
-- Identify temporal patterns in neural activity
-
-### 2. Counterfactual Explanations
-- "What if" scenarios: How would the prediction change if this brain region behaved differently?
-- Generate minimal interventions needed to change predictions
-
-### 3. Feature Importance
-- SHAP values for neural network predictions
-- Layer-wise relevance propagation (LRP)
-
-## Applications
-
-- **Seizure Prediction**: Explain which brain regions are most predictive
-- **Cognitive State Decoding**: Understand neural markers of different mental states
-- **Clinical Decision Support**: Provide interpretable insights to clinicians
-
-## Tech Stack
-
-- SHAP for model-agnostic explanations
-- Captum (PyTorch) for neural network interpretability
-- Custom visualization tools
-
-## Impact
-
-Making AI models interpretable is crucial for clinical adoption and building trust with medical professionals.
-
----
-
-**Keywords**: XAI, Explainable AI, Neuroscience, Clinical ML, Interpretability
+You can also mix the width of your images. Set the `size` parameter on each `col-sm` div to specify its relative width.
+The total width of your images should sum to 12.

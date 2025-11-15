@@ -1,40 +1,28 @@
 ---
 layout: page
-title: iEEG Signal Analysis Toolkit
-description: Python toolkit for preprocessing and analyzing intracranial EEG data
-img: assets/img/projects/ieeg-thumbnail.jpg
+title: Sample Project 1
+description: This is a sample project description
+img: assets/img/projects/project1.jpg
 importance: 1
 category: work
 related_publications: false
 ---
 
-## Overview
+## Sample Project
 
-A comprehensive Python toolkit for analyzing intracranial EEG (iEEG) data, designed for neuroscience researchers working with brain signal data.
+This is a placeholder for a future project.
 
-## Features
+Every project has a beautiful feature showcase page.
+It's easy to include images in a flexible 3-column grid format.
+Make your photos 1/3, 2/3, or full width.
 
-- **Data Preprocessing**: Automated pipeline for filtering, artifact removal, and channel selection
-- **Time-Frequency Analysis**: Wavelet transforms and spectral decomposition
-- **Connectivity Analysis**: Functional and effective connectivity measures
-- **Visualization**: Interactive plots for exploring brain signals
+To give your project a background in the portfolio page, just add the img tag to the front matter like so:
 
-## Tech Stack
-
-- Python 3.9+
-- MNE-Python for EEG processing
-- SciPy for signal processing
-- NumPy/Pandas for data manipulation
-- Matplotlib/Plotly for visualization
-
-## Current Status
-
-🚧 In active development as part of IPA MITOU Advanced Program
-
-## Code
-
-Repository: [Coming soon]
-
+```yaml
 ---
-
-**Keywords**: iEEG, Neuroscience, Signal Processing, Python
+layout: page
+title: project
+description: a project with a background image
+img: /assets/img/12.jpg
+---
+```
