@@ -6,7 +6,7 @@ subtitle: Master's Student | Computer Science | Neural Information Dynamics Lab
 
 profile:
   align: right
-  image: assets/img/prof_pic.jpg
+  image: prof_pic.jpg
   image_circular: true # crops the image to make it circular
   more_info: >
     <p>Neural Information Dynamics Laboratory</p>
