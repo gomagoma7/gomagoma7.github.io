@@ -25,7 +25,14 @@ jobs:
       - name: Install Marp CLI
         run: npm install -g @marp-team/marp-cli
 
-      - name: Convert Marp slides to HTML and Images
+      - name: Install ImageMagick
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick
+          # Fix ImageMagick policy for PNG
+          sudo sed -i 's/rights="none" pattern="PNG"/rights="read|write" pattern="PNG"/' /etc/ImageMagick-6/policy.xml
+
+      - name: Convert Marp slides
         run: |
           mkdir -p assets/slides
 
@@ -38,100 +45,64 @@ jobs:
               mkdir -p "assets/slides/${filename}"
               mkdir -p "assets/slides/${filename}/thumbnails"
 
-              # Generate HTML version (for fullscreen view)
-              marp "$file" \
-                -o "assets/slides/${filename}.html" \
-                --html \
-                --allow-local-files
+              # Generate HTML version
+              marp "$file" -o "assets/slides/${filename}.html" --html --allow-local-files
 
-              # Generate slide images (PNG format, 1920x1080)
-              marp "$file" \
-                --images png \
-                -o "assets/slides/${filename}/" \
-                --image-scale 2
+              # Generate slide images
+              marp "$file" --images png -o "assets/slides/${filename}/" --image-scale 2
 
-              # Rename generated images to slide-XX.png format
+              # Rename images to slide-XX.png
               cd "assets/slides/${filename}"
               counter=1
               for img in *.png; do
-                if [ -f "$img" ]; then
+                if [ -f "$img" ] && [ "$img" != "slide-*.png" ]; then
                   newname=$(printf "slide-%02d.png" $counter)
                   mv "$img" "$newname"
-                  echo "Renamed $img to $newname"
+                  echo "Created: $newname"
                   counter=$((counter + 1))
                 fi
               done
+
+              # Generate thumbnails
+              for img in slide-*.png; do
+                if [ -f "$img" ]; then
+                  convert "$img" -resize 300x169 "thumbnails/$img"
+                  echo "Created thumbnail: $img"
+                fi
+              done
+
               cd ../../..
 
-              echo "Generated $(($counter - 1)) slides for $filename"
-            fi
-          done
+              # Generate metadata.json
+              slide_count=$(ls "assets/slides/${filename}"/slide-*.png 2>/dev/null | wc -l)
 
-      - name: Generate thumbnails
-        run: |
-          # Install ImageMagick for image processing
-          sudo apt-get update
-          sudo apt-get install -y imagemagick
-
-          for dir in assets/slides/*/; do
-            if [ -d "$dir" ]; then
-              dirname=$(basename "$dir")
-              if [ "$dirname" != "thumbnails" ] && [ -f "${dir}slide-01.png" ]; then
-                echo "Generating thumbnails for $dirname..."
-                mkdir -p "${dir}thumbnails"
-
-                for img in ${dir}slide-*.png; do
-                  if [ -f "$img" ]; then
-                    imgname=$(basename "$img")
-                    convert "$img" -resize 300x169 "${dir}thumbnails/${imgname}"
-                    echo "Created thumbnail: ${imgname}"
-                  fi
-                done
-              fi
-            fi
-          done
-
-      - name: Generate metadata
-        run: |
-          for dir in assets/slides/*/; do
-            if [ -d "$dir" ]; then
-              dirname=$(basename "$dir")
-              if [ "$dirname" != "thumbnails" ] && [ -f "${dir}slide-01.png" ]; then
-                echo "Generating metadata for $dirname..."
-
-                # Count slides
-                slide_count=$(ls ${dir}slide-*.png 2>/dev/null | wc -l)
-
-                # Generate metadata.json
-                cat > "${dir}metadata.json" <<EOF
+              cat > "assets/slides/${filename}/metadata.json" <<EOF
 {
-  "title": "${dirname}",
+  "title": "${filename}",
   "author": "Junya Honda",
   "date": "$(date -I)",
   "totalSlides": ${slide_count},
   "slides": [
 EOF
 
-                # Add slide entries
-                for i in $(seq 1 $slide_count); do
-                  slide_num=$(printf "%02d" $i)
-                  echo "    {" >> "${dir}metadata.json"
-                  echo "      \"number\": $i," >> "${dir}metadata.json"
-                  echo "      \"image\": \"slide-${slide_num}.png\"," >> "${dir}metadata.json"
-                  echo "      \"thumbnail\": \"thumbnails/slide-${slide_num}.png\"," >> "${dir}metadata.json"
-                  echo "      \"title\": \"Slide $i\"" >> "${dir}metadata.json"
-                  if [ $i -eq $slide_count ]; then
-                    echo "    }" >> "${dir}metadata.json"
-                  else
-                    echo "    }," >> "${dir}metadata.json"
-                  fi
-                done
+              for i in $(seq 1 $slide_count); do
+                slide_num=$(printf "%02d" $i)
+                echo "    {" >> "assets/slides/${filename}/metadata.json"
+                echo "      \"number\": $i," >> "assets/slides/${filename}/metadata.json"
+                echo "      \"image\": \"slide-${slide_num}.png\"," >> "assets/slides/${filename}/metadata.json"
+                echo "      \"thumbnail\": \"thumbnails/slide-${slide_num}.png\"," >> "assets/slides/${filename}/metadata.json"
+                echo "      \"title\": \"Slide $i\"" >> "assets/slides/${filename}/metadata.json"
+                if [ $i -eq $slide_count ]; then
+                  echo "    }" >> "assets/slides/${filename}/metadata.json"
+                else
+                  echo "    }," >> "assets/slides/${filename}/metadata.json"
+                fi
+              done
 
-                echo "  ]" >> "${dir}metadata.json"
-                echo "}" >> "${dir}metadata.json"
+              echo "  ]" >> "assets/slides/${filename}/metadata.json"
+              echo "}" >> "assets/slides/${filename}/metadata.json"
 
-                echo "Metadata generated for $dirname ($slide_count slides)"
-              fi
+              echo "Generated $slide_count slides for $filename"
             fi
           done
 
@@ -146,3 +117,4 @@ EOF
             git commit -m "Auto-generate Marp slides [skip ci]"
             git push
           fi
+
