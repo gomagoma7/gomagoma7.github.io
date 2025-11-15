@@ -1,0 +1,15 @@
+<svg width="300" height="169" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="169" fill="#282a36"/>
+  <text x="150" y="50" font-family="Arial, sans-serif" font-size="16" fill="#f8f8f2" text-anchor="middle" font-weight="bold">
+    What is iEEG?
+  </text>
+  <text x="20" y="85" font-family="Arial, sans-serif" font-size="10" fill="#50fa7b" text-anchor="start">
+    • High resolution
+  </text>
+  <text x="20" y="105" font-family="Arial, sans-serif" font-size="10" fill="#50fa7b" text-anchor="start">
+    • Clean signals
+  </text>
+  <text x="20" y="125" font-family="Arial, sans-serif" font-size="10" fill="#50fa7b" text-anchor="start">
+    • Direct access
+  </text>
+</svg>

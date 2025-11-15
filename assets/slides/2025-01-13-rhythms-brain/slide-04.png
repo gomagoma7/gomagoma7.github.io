@@ -1,0 +1,21 @@
+<svg width="1920" height="1080" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1920" height="1080" fill="#282a36"/>
+  <text x="960" y="200" font-family="Arial, sans-serif" font-size="64" fill="#f8f8f2" text-anchor="middle" font-weight="bold">
+    Summary
+  </text>
+  <text x="300" y="350" font-family="Arial, sans-serif" font-size="36" fill="#50fa7b" text-anchor="start">
+    ✅ iEEG provides high-quality brain signals
+  </text>
+  <text x="300" y="440" font-family="Arial, sans-serif" font-size="36" fill="#50fa7b" text-anchor="start">
+    ✅ Python ecosystem offers powerful analysis tools
+  </text>
+  <text x="300" y="530" font-family="Arial, sans-serif" font-size="36" fill="#50fa7b" text-anchor="start">
+    ✅ GNNs are promising for connectivity analysis
+  </text>
+  <text x="300" y="620" font-family="Arial, sans-serif" font-size="36" fill="#50fa7b" text-anchor="start">
+    ✅ Many exciting research opportunities ahead!
+  </text>
+  <text x="960" y="800" font-family="Arial, sans-serif" font-size="48" fill="#bd93f9" text-anchor="middle" font-weight="bold">
+    Thank you!
+  </text>
+</svg>

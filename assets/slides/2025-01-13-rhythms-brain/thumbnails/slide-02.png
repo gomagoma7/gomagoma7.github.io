@@ -1,0 +1,15 @@
+<svg width="300" height="169" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="169" fill="#282a36"/>
+  <text x="150" y="50" font-family="Arial, sans-serif" font-size="16" fill="#f8f8f2" text-anchor="middle" font-weight="bold">
+    Table of Contents
+  </text>
+  <text x="20" y="80" font-family="Arial, sans-serif" font-size="10" fill="#8be9fd" text-anchor="start">
+    1. Introduction
+  </text>
+  <text x="20" y="100" font-family="Arial, sans-serif" font-size="10" fill="#8be9fd" text-anchor="start">
+    2. Preprocessing
+  </text>
+  <text x="20" y="120" font-family="Arial, sans-serif" font-size="10" fill="#8be9fd" text-anchor="start">
+    3. Analysis
+  </text>
+</svg>
