@@ -28,7 +28,7 @@ menu:
 params:
     description: "Junya Honda's personal website - Master's student in Computer Science at Toyohashi University of Technology, researching brain signal analysis with Graph Neural Networks and Explainable AI."
     author: Junya Honda
-    # googleAnalyticsID: "G-XXXXX"
+    googleAnalyticsID: "G-496XB32PR9"
     DateFormat: "January 2006"
     defaultTheme: light
     hideFooter: false
