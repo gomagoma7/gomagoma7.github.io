@@ -48,13 +48,13 @@ jobs:
             exit 0
           fi
           git clone --depth 1 https://${VOYAGER_TOKEN}@github.com/gomagoma7/voyager.git /tmp/voyager
-          # Copy beacon/ contents into content/, preserving directory structure
-          if [ -d /tmp/voyager/publish ]; then
-            cp -r /tmp/voyager/beacon/* content/
+          # Copy asterismos/beacon/ contents into content/
+          if [ -d /tmp/voyager/asterismos/beacon ]; then
+            cp -r /tmp/voyager/asterismos/beacon/* content/
             echo "Published content:"
             find content/ -name "*.md" -newer .git/HEAD | head -20
           else
-            echo "beacon/ not found in Voyager, skipping"
+            echo "asterismos/beacon/ not found in Voyager, skipping"
           fi
           rm -rf /tmp/voyager
 
