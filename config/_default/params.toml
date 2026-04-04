@@ -1,5 +1,5 @@
 colorScheme = "congo"
-defaultAppearance = "light"
+defaultAppearance = "dark"
 autoSwitchAppearance = true
 
 defaultThemeColor = "#FFFFFF"
