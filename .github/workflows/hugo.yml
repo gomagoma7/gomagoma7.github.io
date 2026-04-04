@@ -51,6 +51,10 @@ jobs:
           # Copy asterismos/beacon/ contents into content/
           if [ -d /tmp/voyager/asterismos/beacon ]; then
             cp -r /tmp/voyager/asterismos/beacon/* content/
+            # Strip index.md from relative links (Obsidian → Hugo)
+            find content/ -name "*.md" -exec sed -i 's|/index\.md)|/)|g' {} \;
+            # Remove _example directories (template files, not publishable)
+            find content/ -type d -name "_example" -exec rm -rf {} + 2>/dev/null || true
             echo "Published content:"
             find content/ -name "*.md" -newer .git/HEAD | head -20
           else
