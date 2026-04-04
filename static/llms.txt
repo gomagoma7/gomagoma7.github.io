@@ -1,26 +1,27 @@
-# Junya Honda — Personal Academic Website
+# Junya G. Honda — Personal Academic Website
 
-> Master's student in Computer Science at Toyohashi University of Technology.
-> Research focus: brain signal analysis using Graph Neural Networks and Explainable AI techniques, working with iEEG data.
+> Master's student in Computer Science at Toyohashi University of Technology (Uehara Lab).
+> Research focus: brain signal analysis, explainable AI, graph neural networks, and multi-agent LLM systems.
 
 ## Site Structure
 
 - [Home](https://gomagoma7.github.io/) — Profile and navigation
-- [Papers](https://gomagoma7.github.io/papers/) — Research publications
+- [Papers](https://gomagoma7.github.io/papers/) — Research publications and presentations
 - [Projects](https://gomagoma7.github.io/projects/) — Software and research projects
 - [Blog](https://gomagoma7.github.io/blog/) — Technical posts and research notes
 - [Tags](https://gomagoma7.github.io/tags/) — Topic-based index
-- [CV](https://gomagoma7.github.io/cv.pdf) — Curriculum Vitae (PDF)
+- [CV](https://gomagoma7.github.io/cv/) — Curriculum Vitae
 
 ## Research Interests
 
-- Graph Neural Networks (GNN)
+- Brain Signal Analysis (iEEG/EEG)
 - Explainable AI (XAI)
-- Brain-Computer Interface / Neural Signal Analysis
-- Intracranial EEG (iEEG)
-- Brain Connectivity
+- Graph Neural Networks (GNN)
+- Multi-Agent LLM Systems
+- Concept Exploration on Latent Spaces
 
 ## Contact
 
 - GitHub: https://github.com/gomagoma7
 - LinkedIn: https://www.linkedin.com/in/junya-honda-2613a8298/
+- X: https://twitter.com/Jupyter_Mokusei

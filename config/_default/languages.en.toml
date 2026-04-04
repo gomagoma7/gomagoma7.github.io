@@ -1,0 +1,24 @@
+languageCode = "en"
+languageName = "English"
+languageDirection = "ltr"
+weight = 1
+
+title = "Junya G. Honda"
+
+[params]
+  dateFormat = "January 2006"
+  mainSections = ["papers", "projects", "blog"]
+  description = "Junya G. Honda — Master's student in Computer Science at Toyohashi University of Technology. Research focus: brain signal analysis, explainable AI, and graph neural networks."
+
+[params.author]
+  name = "Junya G. Honda"
+  image = "picture.jpeg"
+  headline = "Brain Signal Analysis / Explainable AI / Graph Neural Networks"
+  bio = "M.S. student in Computer Science at Toyohashi University of Technology (Uehara Lab). Research focuses on brain signal analysis using GNN and XAI techniques."
+  links = [
+    { github = "https://github.com/gomagoma7" },
+    { linkedin = "https://www.linkedin.com/in/junya-honda-2613a8298/" },
+    { x-twitter = "https://twitter.com/Jupyter_Mokusei" },
+    { instagram = "https://instagram.com/junya_4649_great" },
+    { email = "#email" },
+  ]

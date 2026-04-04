@@ -1,0 +1,55 @@
+{{ define "main" }}
+  <article class="cv-page max-w-full">
+    <header class="cv-header mb-8 border-b border-neutral-200 pb-6 text-center dark:border-neutral-700">
+      <p class="text-3xl font-bold text-neutral-900 dark:text-neutral">Junya G. Honda / 本田 純也</p>
+      <p class="mt-1 text-base text-neutral-500 dark:text-neutral-400">Toyohashi University of Technology — M.S. in Computer Science</p>
+    </header>
+    <section class="prose mt-6 max-w-full dark:prose-invert cv-content">
+      {{ .Content | emojify }}
+    </section>
+    <div class="mt-8 text-center print:hidden">
+      <button
+        onclick="document.title='CV — Junya G. Honda'; window.print(); document.title='CV | Junya G. Honda';"
+        class="rounded-md bg-primary-600 px-6 py-2 text-sm text-neutral hover:bg-primary-500 dark:bg-primary-800 dark:hover:bg-primary-700"
+      >
+        Save as PDF
+      </button>
+    </div>
+  </article>
+
+  <style>
+    .cv-content h2 {
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--tw-prose-hr);
+      padding-bottom: 0.3rem;
+      margin-top: 1.5rem;
+    }
+    .cv-content h3 {
+      font-size: 0.95rem;
+      margin-top: 0.8rem;
+    }
+    .cv-content li {
+      font-size: 0.9rem;
+    }
+    .cv-content table {
+      font-size: 0.9rem;
+    }
+    @media print {
+      header, footer, nav, .print\\:hidden, [id="to-top"] {
+        display: none !important;
+      }
+      body {
+        background: white !important;
+      }
+      .cv-page {
+        max-width: 100%;
+        font-size: 11pt;
+      }
+      .cv-content h2 { font-size: 10pt; margin-top: 1rem; }
+      .cv-content li, .cv-content table { font-size: 9pt; }
+      @page { size: A4; margin: 15mm 20mm; }
+    }
+  </style>
+{{ end }}

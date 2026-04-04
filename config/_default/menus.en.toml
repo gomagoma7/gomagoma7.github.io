@@ -1,0 +1,31 @@
+# -- Main Menu --
+[[main]]
+  name = "Papers"
+  pageRef = "papers"
+  weight = 10
+
+[[main]]
+  name = "Projects"
+  pageRef = "projects"
+  weight = 20
+
+[[main]]
+  name = "Blog"
+  pageRef = "blog"
+  weight = 30
+
+[[main]]
+  name = "CV"
+  pageRef = "cv"
+  weight = 40
+
+[[main]]
+  name = "Tags"
+  pageRef = "tags"
+  weight = 50
+
+[[main]]
+  identifier = "search"
+  weight = 99
+  [main.params]
+    action = "search"
