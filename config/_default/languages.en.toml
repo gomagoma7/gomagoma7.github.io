@@ -7,7 +7,7 @@ title = "Junya G. Honda"
 
 [params]
   dateFormat = "January 2006"
-  mainSections = ["papers", "projects", "blog"]
+  mainSections = ["research", "projects", "blog"]
   description = "Junya G. Honda — Master's student in Computer Science at Toyohashi University of Technology. Research focus: brain signal analysis, explainable AI, and graph neural networks."
 
 [params.author]

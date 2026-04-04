@@ -1,7 +1,7 @@
 # -- Main Menu --
 [[main]]
-  name = "Papers"
-  pageRef = "papers"
+  name = "Research"
+  pageRef = "research"
   weight = 10
 
 [[main]]

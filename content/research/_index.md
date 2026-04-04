@@ -1,6 +1,6 @@
 ---
-title: "Papers"
-description: "Conference presentations and publications by Junya Honda."
+title: "Research"
+description: "Research presentations and publications by Junya Honda."
 ---
 
 ## Co-authored
