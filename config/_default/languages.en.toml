@@ -13,8 +13,8 @@ title = "Junya G. Honda"
 [params.author]
   name = "Junya G. Honda"
   image = "img/author.jpeg"
-  headline = "Brain Signal Analysis / Explainable AI / Graph Neural Networks"
-  bio = "M.S. student in Computer Science at Toyohashi University of Technology (Uehara Lab). Research focuses on brain signal analysis using GNN and XAI techniques."
+  headline = "Neural Data Analysis / Explainable AI / Representation Analysis"
+  bio = "M.S. student in Computer Science at Toyohashi University of Technology (Uehara Lab). Interested in how AI can bring new insights to neuroscience — analyzing brain networks as graphs with GNNs, and using counterfactual explanations to turn model predictions into actionable insights for clinical use. Also exploring how to extract and visualize the knowledge that AI models acquire internally."
   links = [
     { github = "https://github.com/gomagoma7" },
     { linkedin = "https://www.linkedin.com/in/junya-honda-2613a8298/" },
