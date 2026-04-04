@@ -3,17 +3,65 @@
 <header class="page-header">
 </header>
 
-<ul class="terms-tags">
-    {{- $type := .Type }}
-    {{- range $key, $value := .Data.Terms.Alphabetical }}
-    {{- $name := .Name }}
-    {{- $count := .Count }}
-    {{- with site.GetPage (printf "/%s/%s" $type $name) }}
-    <li>
-        <a href="{{ .Permalink }}">{{ .Name }} <sup><strong><sup>{{ $count }}</sup></strong></sup> </a>
-    </li>
-    {{- end }}
-    {{- end }}
-</ul>
+<div id="word-cloud" style="max-width: 600px; height: 450px; margin: 0 auto; background: #fff; border-radius: 8px;"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.3/src/wordcloud2.min.js"></script>
+<script>
+(function() {
+    var tags = [
+        {{- $type := .Type }}
+        {{- range $i, $value := .Data.Terms.ByCount }}
+        {{- $name := .Name }}
+        {{- $count := .Count }}
+        {{- with site.GetPage (printf "/%s/%s" $type $name) }}
+        {{- if $i }},{{ end }}
+        { text: {{ $name }}, count: {{ $count }}, url: {{ .Permalink }} }
+        {{- end }}
+        {{- end }}
+    ];
+
+    var maxCount = Math.max(...tags.map(t => t.count));
+    var minSize = 14;
+    var maxSize = 64;
+
+    var list = tags.map(function(t) {
+        var size = minSize + (t.count / maxCount) * (maxSize - minSize);
+        return [t.text, size, t.url];
+    });
+
+    var colorIdx = 0;
+    var canvas = document.getElementById('word-cloud');
+    // Paul Tol Vibrant
+    var palette = [
+        [0, 119, 187],
+        [51, 187, 238],
+        [0, 153, 136],
+        [238, 119, 51],
+        [204, 51, 17],
+        [238, 51, 119]
+    ];
+
+    WordCloud(canvas, {
+        list: list,
+        gridSize: 10,
+        weightFactor: 1,
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        color: function() {
+            var c = palette[colorIdx % palette.length];
+            colorIdx++;
+            return 'rgb(' + c[0] + ',' + c[1] + ',' + c[2] + ')';
+        },
+        rotateRatio: 0.25,
+        rotationSteps: 2,
+        backgroundColor: '#ffffff',
+        click: function(item) {
+            if (item && item[2]) window.location.href = item[2];
+        },
+        hover: function(item, dimension, event) {
+            canvas.style.cursor = item ? 'pointer' : 'default';
+        }
+    });
+})();
+</script>
 
 {{- end }}

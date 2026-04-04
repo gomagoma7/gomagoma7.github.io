@@ -14,12 +14,20 @@
     {{- print " · "}}
     {{- end }}    
     <span>
-    Powered by 
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">hugo</a>, <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">papermod</a>, &amp;
-        <a href="https://github.com/pmichaillat/hugo-website/" rel="noopener" target="_blank">hugo-website</a>.
+    Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &amp;
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>.
     </span>
 </footer>
 {{- end }}
+
+{{- /* Email obfuscation — assembles mailto dynamically to prevent scraping */}}
+<script>
+    document.querySelectorAll('a[href="#email"]').forEach(function(el) {
+        var u = 'honda.junya.qt', d = 'tut.jp';
+        el.href = 'mailto:' + u + '@' + d;
+    });
+</script>
 
 {{- if (not site.Params.disableScrollToTop) }}
 <a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">

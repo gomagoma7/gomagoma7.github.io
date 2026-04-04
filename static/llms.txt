@@ -1,0 +1,26 @@
+# Junya Honda — Personal Academic Website
+
+> Master's student in Computer Science at Toyohashi University of Technology.
+> Research focus: brain signal analysis using Graph Neural Networks and Explainable AI techniques, working with iEEG data.
+
+## Site Structure
+
+- [Home](https://gomagoma7.github.io/) — Profile and navigation
+- [Papers](https://gomagoma7.github.io/papers/) — Research publications
+- [Projects](https://gomagoma7.github.io/projects/) — Software and research projects
+- [Blog](https://gomagoma7.github.io/blog/) — Technical posts and research notes
+- [Tags](https://gomagoma7.github.io/tags/) — Topic-based index
+- [CV](https://gomagoma7.github.io/cv.pdf) — Curriculum Vitae (PDF)
+
+## Research Interests
+
+- Graph Neural Networks (GNN)
+- Explainable AI (XAI)
+- Brain-Computer Interface / Neural Signal Analysis
+- Intracranial EEG (iEEG)
+- Brain Connectivity
+
+## Contact
+
+- GitHub: https://github.com/gomagoma7
+- LinkedIn: https://www.linkedin.com/in/junya-honda-2613a8298/
