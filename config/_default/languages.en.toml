@@ -12,7 +12,7 @@ title = "Junya G. Honda"
 
 [params.author]
   name = "Junya G. Honda"
-  image = "picture.jpeg"
+  image = "img/author.jpeg"
   headline = "Brain Signal Analysis / Explainable AI / Graph Neural Networks"
   bio = "M.S. student in Computer Science at Toyohashi University of Technology (Uehara Lab). Research focuses on brain signal analysis using GNN and XAI techniques."
   links = [
