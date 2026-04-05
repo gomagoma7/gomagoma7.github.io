@@ -69,7 +69,7 @@
       {{ partial "article-meta.html" . }}
     </div>
     {{ if .Params.showSummary | default (.Site.Params.list.showSummary | default false) }}
-      <div class="prose max-w-none py-1 dark:prose-invert">
+      <div class="prose max-w-3xl py-1 dark:prose-invert">
         {{ .Summary | emojify }}
       </div>
     {{ end }}
