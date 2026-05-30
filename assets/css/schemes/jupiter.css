@@ -16,7 +16,7 @@
 
 :root {
   /* --- warm neutral ramp (cream → warm-black) --- */
-  --color-neutral: 247, 242, 233;     /* #f7f2e9  light page bg / dark text base */
+  --color-neutral: 253, 250, 243;     /* #fdfaf3  light page bg / dark text base */
   --color-neutral-50: 250, 246, 238;  /* #faf6ee */
   --color-neutral-100: 245, 239, 226; /* #f5efe2  inline-code bg (light) */
   --color-neutral-200: 232, 220, 198; /* #e8dcc6  borders (light) */
