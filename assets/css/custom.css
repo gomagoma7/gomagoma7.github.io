@@ -1,0 +1,138 @@
+/* ============================================================================
+   custom.css — Jupiter typography + component polish (Congo).
+   Auto-loaded by Congo head.html AFTER the scheme + compiled Tailwind, so
+   these rules win on the cascade. Targets Congo's real markup / Tailwind
+   classes (.prose, .article-link-card, profile hero).
+   ========================================================================== */
+
+:root {
+  --font-jp: "IBM Plex Sans JP";
+  --font-body: "Fira Code", var(--font-jp), ui-monospace, SFMono-Regular, monospace;
+  --font-display: "Martian Mono", var(--font-jp), ui-monospace, monospace;
+}
+
+/* ----------------------------- 1. Typography ----------------------------- */
+html,
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.005em;
+}
+
+/* Display face on the name + page/article titles + h2 (mono-forward identity) */
+h1,
+h2,
+.prose h1,
+.prose h2,
+.article-link-card h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+/* Site title in the header, for consistency with the hero name */
+header a[href$="/"],
+.font-extrabold {
+  font-family: var(--font-display);
+}
+
+/* ------------------------ 2. Profile hero polish ------------------------- */
+/* round avatar gets a subtle warm ring */
+.home-hero img.rounded-full,
+.profile img.rounded-full {
+  border: 1px solid rgb(var(--color-neutral-200));
+}
+.dark .home-hero img.rounded-full,
+.dark .profile img.rounded-full {
+  border-color: rgb(var(--color-neutral-700));
+}
+
+/* neural canvas host: keep hero content above the drifting node-graph */
+[data-neural] {
+  position: relative;
+}
+[data-neural] > canvas {
+  z-index: 0;
+}
+[data-neural] > *:not(canvas) {
+  position: relative;
+  z-index: 1;
+}
+
+/* --------------------- 3. Blog list entries (refine) -------------------- */
+/* This repo's article-link.html is a borderless title+meta+summary row (the
+   project pages are standalone HTML, so the list is usually empty). Keep it
+   light: title turns gold on hover, year headers muted. If real markdown
+   posts are later added and you want bordered cards, wrap each entry and
+   style it here. */
+.max-w-prose > article h3 a:hover {
+  color: rgb(var(--color-primary-500));
+}
+
+/* ----------------------------- 4. Article prose -------------------------- */
+.prose {
+  line-height: 1.7;
+}
+
+/* gold "#" before h2 (the section-marker motif) */
+.prose h2::before {
+  content: "# ";
+  color: rgb(var(--color-primary-500));
+}
+
+/* links gold, with a soft underline */
+.prose a {
+  color: rgb(var(--color-primary-500));
+  text-decoration-color: rgb(var(--color-primary-400));
+  text-underline-offset: 2px;
+}
+
+/* blockquote: gold left border, italic, muted */
+.prose blockquote {
+  border-left: 2px solid rgb(var(--color-primary-500));
+  color: rgb(var(--color-neutral-600));
+  font-style: italic;
+}
+.dark .prose blockquote {
+  color: rgb(var(--color-neutral-400));
+}
+
+/* list bullets as gold arrows */
+.prose ul > li::before {
+  content: "→";
+  background: none !important;
+  border-radius: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  color: rgb(var(--color-primary-500));
+  transform: none;
+}
+
+/* code: mono everywhere, warm code-block bg, gold language label */
+.prose code,
+.prose pre,
+.prose pre code {
+  font-family: var(--font-body);
+}
+.prose pre {
+  border: 1px solid rgb(var(--color-neutral-200));
+  border-radius: 10px;
+}
+.dark .prose pre {
+  background: rgb(26, 20, 13) !important; /* #1a140d */
+  border-color: rgb(var(--color-neutral-700));
+}
+.prose :not(pre) > code {
+  background: rgb(var(--color-neutral-100));
+  border-radius: 4px;
+}
+.dark .prose :not(pre) > code {
+  background: rgb(40, 32, 23); /* #282017 */
+}
+
+/* ------------------------------- 5. Misc -------------------------------- */
+::selection {
+  background: rgba(247, 178, 46, 0.18);
+}
+:root:not(.dark) ::selection {
+  background: rgba(168, 94, 0, 0.14);
+}

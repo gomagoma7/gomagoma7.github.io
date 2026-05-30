@@ -3,7 +3,7 @@
     <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">{{ .Title }}</h1>
   </header>
 
-  <div id="word-cloud" style="max-width: 600px; height: 450px; margin: 2rem auto; background: #fff; border-radius: 8px;"></div>
+  <div id="word-cloud" style="max-width: 600px; height: 450px; margin: 2rem auto; background: transparent; border-radius: 8px;"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.3/src/wordcloud2.min.js"></script>
   <script>
@@ -53,7 +53,7 @@
           },
           rotateRatio: 0.25,
           rotationSteps: 2,
-          backgroundColor: '#ffffff',
+          backgroundColor: 'rgba(0,0,0,0)',
           click: function(item) {
               if (item && item[2]) window.location.href = item[2];
           },

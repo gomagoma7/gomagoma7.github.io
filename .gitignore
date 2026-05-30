@@ -5,3 +5,8 @@ resources/
 node_modules
 hugo_stats.json
 .jekyll-cache
+
+# Un-ignore Hugo's home-layout partials (global gitignore has `**/home/`,
+# which otherwise swallows layouts/_partials/home/ — needed for the neural hero)
+!layouts/_partials/home/
+!layouts/_partials/home/**

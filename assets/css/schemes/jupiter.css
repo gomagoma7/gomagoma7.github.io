@@ -1,0 +1,72 @@
+/* ============================================================================
+   Jupiter scheme — warm-black + gold, for Congo (Tailwind RGB-triple vars).
+   Selected via `colorScheme = "jupiter"`; loaded by Congo head.html.
+
+   Congo uses ONE neutral ramp for both appearances (light vs dark switch via
+   Tailwind `dark:` variants, e.g. `bg-neutral dark:bg-neutral-800`):
+     - light page bg  = --color-neutral (DEFAULT)
+     - light text     = --color-neutral-900 / -800
+     - dark  page bg  = --color-neutral-800   (#14100c)
+     - dark  text     = --color-neutral (DEFAULT)
+     - borders        = --color-neutral-200 (light) / -700 (dark, #3a2d20)
+   Accent (links / hovers) = --color-primary-*. Congo applies it in both
+   appearances, so a `.dark` override gives light=deep-amber (AA on cream),
+   dark=bright gold.
+   ========================================================================== */
+
+:root {
+  /* --- warm neutral ramp (cream → warm-black) --- */
+  --color-neutral: 247, 242, 233;     /* #f7f2e9  light page bg / dark text base */
+  --color-neutral-50: 250, 246, 238;  /* #faf6ee */
+  --color-neutral-100: 245, 239, 226; /* #f5efe2  inline-code bg (light) */
+  --color-neutral-200: 232, 220, 198; /* #e8dcc6  borders (light) */
+  --color-neutral-300: 209, 195, 168; /* #d1c3a8 */
+  --color-neutral-400: 160, 145, 120; /* #a09178  faint */
+  --color-neutral-500: 124, 111, 93;  /* #7c6f5d  muted */
+  --color-neutral-600: 102, 91, 70;   /* #665b46  secondary text (light) */
+  --color-neutral-700: 58, 45, 32;    /* #3a2d20  borders (dark) */
+  --color-neutral-800: 20, 16, 12;    /* #14100c  page bg (dark) */
+  --color-neutral-900: 35, 29, 18;    /* #231d12  headings (light) */
+  --color-neutral-950: 12, 9, 6;      /* #0c0906 */
+
+  /* --- accent: deep amber (light, AA contrast on cream) --- */
+  --color-primary-50: 252, 244, 229;
+  --color-primary-100: 250, 233, 204;
+  --color-primary-200: 244, 209, 150;
+  --color-primary-300: 235, 179, 98;
+  --color-primary-400: 214, 134, 30;
+  --color-primary-500: 168, 94, 0;    /* #a85e00 */
+  --color-primary-600: 146, 80, 0;
+  --color-primary-700: 120, 64, 0;
+  --color-primary-800: 96, 52, 4;
+  --color-primary-900: 79, 44, 8;
+  --color-primary-950: 46, 25, 2;
+
+  /* --- secondary: muted amber (rarely used by Congo here) --- */
+  --color-secondary-50: 252, 244, 229;
+  --color-secondary-100: 249, 231, 200;
+  --color-secondary-200: 242, 206, 145;
+  --color-secondary-300: 232, 178, 96;
+  --color-secondary-400: 209, 146, 42;
+  --color-secondary-500: 176, 120, 30;
+  --color-secondary-600: 146, 99, 24;
+  --color-secondary-700: 117, 78, 20;
+  --color-secondary-800: 94, 63, 18;
+  --color-secondary-900: 78, 53, 18;
+  --color-secondary-950: 45, 29, 8;
+}
+
+/* --- dark appearance: bright crisp gold (high luminance) --- */
+.dark {
+  --color-primary-50: 60, 42, 12;
+  --color-primary-100: 92, 64, 16;
+  --color-primary-200: 130, 92, 24;
+  --color-primary-300: 184, 130, 34;
+  --color-primary-400: 255, 210, 122;  /* #ffd27a  tint (hover borders) */
+  --color-primary-500: 247, 178, 46;   /* #f7b22e  primary accent / links */
+  --color-primary-600: 219, 150, 30;
+  --color-primary-700: 184, 122, 22;
+  --color-primary-800: 146, 96, 18;
+  --color-primary-900: 110, 72, 14;
+  --color-primary-950: 70, 45, 8;
+}
