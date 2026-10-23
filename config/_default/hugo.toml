@@ -28,3 +28,8 @@ summaryLength = 0
     enableDNT = true
   [privacy.youTube]
     privacyEnhanced = true
+
+# Keep attribute quotes so verification tags stay byte-identical to what
+# third parties (e.g. Impact) expect when they string-match the <head>
+[minify.tdewolff.html]
+  keepQuotes = true

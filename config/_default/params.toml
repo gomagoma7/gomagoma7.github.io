@@ -11,6 +11,10 @@ enableImageWebp = true
 
 fingerprintAlgorithm = "sha256"
 
+# Site ownership verification tags, rendered on the homepage <head> only
+[verification]
+  impact = "8c87fb17-c610-48b0-b1fc-452678e0cac4"
+
 [header]
   layout = "basic"
   showTitle = true
