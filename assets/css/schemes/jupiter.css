@@ -1,72 +1,123 @@
 /* ============================================================================
-   Jupiter scheme — warm-black + gold, for Congo (Tailwind RGB-triple vars).
+   Jupiter scheme — cool neutral + Dracula accents (2026-10).
+   Spec: voyager/cabin/aglaea/design/homepage-handoff.md
    Selected via `colorScheme = "jupiter"`; loaded by Congo head.html.
 
-   Congo uses ONE neutral ramp for both appearances (light vs dark switch via
-   Tailwind `dark:` variants, e.g. `bg-neutral dark:bg-neutral-800`):
-     - light page bg  = --color-neutral (DEFAULT)
-     - light text     = --color-neutral-900 / -800
-     - dark  page bg  = --color-neutral-800   (#14100c)
-     - dark  text     = --color-neutral (DEFAULT)
-     - borders        = --color-neutral-200 (light) / -700 (dark, #3a2d20)
-   Accent (links / hovers) = --color-primary-*. Congo applies it in both
-   appearances, so a `.dark` override gives light=deep-amber (AA on cream),
-   dark=bright gold.
+   This file holds every colour value on the site. It has two layers:
+
+   1. Role tokens (--role-*): one role = one colour, everywhere. custom.css
+      routes Congo's markup to these; nothing else should carry a hex value.
+   2. Congo's ramps (--color-neutral-* / -primary-* / -secondary-*), which
+      Congo's precompiled Tailwind reads. The primary ramp is NOT a lightness
+      ramp: each shade Congo's templates reference is a slot pointing at the
+      hover-cue role, so every spot custom.css does not route explicitly
+      (header, logo, footer, list titles, prev/next, skip link) falls back to
+      the hover cue instead of meaning "the accent".
+
+   All values are R, G, B triples (Congo's convention: rgba(var(--x), a)).
+   `:root` = light, `.dark` = dark. Contrast figures are against the page bg.
    ========================================================================== */
 
 :root {
-  /* --- warm neutral ramp (cream → warm-black) --- */
-  --color-neutral: 253, 250, 243;     /* #fdfaf3  light page bg / dark text base */
-  --color-neutral-50: 250, 246, 238;  /* #faf6ee */
-  --color-neutral-100: 245, 239, 226; /* #f5efe2  inline-code bg (light) */
-  --color-neutral-200: 232, 220, 198; /* #e8dcc6  borders (light) */
-  --color-neutral-300: 209, 195, 168; /* #d1c3a8 */
-  --color-neutral-400: 160, 145, 120; /* #a09178  faint */
-  --color-neutral-500: 124, 111, 93;  /* #7c6f5d  muted */
-  --color-neutral-600: 102, 91, 70;   /* #665b46  secondary text (light) */
-  --color-neutral-700: 58, 45, 32;    /* #3a2d20  borders (dark) */
-  --color-neutral-800: 20, 16, 12;    /* #14100c  page bg (dark) */
-  --color-neutral-900: 35, 29, 18;    /* #231d12  headings (light) */
-  --color-neutral-950: 12, 9, 6;      /* #0c0906 */
+  /* --- neutral ramp: 50 lightest -> 950 darkest in BOTH modes. Congo's dark
+     styles reach for low numbers as light tints, so an inverted dark ramp
+     breaks them. Both page backgrounds share one temperature. --- */
+  --color-neutral: 241, 243, 245;     /* #f1f3f5  page bg (light) */
+  --color-neutral-50: 235, 237, 239;  /* #ebedef  code block bg (light) */
+  --color-neutral-100: 227, 229, 231; /* #e3e5e7  inline code / search row (light) */
+  --color-neutral-200: 212, 214, 217; /* #d4d6d9  borders (light), body (dark) */
+  --color-neutral-300: 184, 187, 190; /* #b8bbbe */
+  --color-neutral-400: 149, 153, 156; /* #95999c  secondary text (dark) */
+  --color-neutral-500: 116, 120, 124; /* #74787c  muted */
+  --color-neutral-600: 88, 91, 96;    /* #585b60  secondary text (light) */
+  --color-neutral-700: 57, 60, 66;    /* #393c42  borders (dark) */
+  --color-neutral-800: 36, 39, 45;    /* #24272d  page bg (dark) */
+  --color-neutral-900: 43, 46, 51;    /* #2b2e33  headings + body (light), 12.2:1 */
+  --color-neutral-950: 21, 24, 30;    /* #15181e */
 
-  /* --- accent: deep amber (light, AA contrast on cream) --- */
-  --color-primary-50: 252, 244, 229;
-  --color-primary-100: 250, 233, 204;
-  --color-primary-200: 244, 209, 150;
-  --color-primary-300: 235, 179, 98;
-  --color-primary-400: 214, 134, 30;
-  --color-primary-500: 168, 94, 0;    /* #a85e00 */
-  --color-primary-600: 146, 80, 0;
-  --color-primary-700: 120, 64, 0;
-  --color-primary-800: 96, 52, 4;
-  --color-primary-900: 79, 44, 8;
-  --color-primary-950: 46, 25, 2;
+  /* --- role tokens (light): accents keep the dark hue, only darkened.
+     Text uses the 4.5:1 tier, marks the 3:1 tier. --- */
+  --role-link: 9, 122, 140;            /* #097a8c  article links (cyan) */
+  --role-mark: 223, 92, 169;           /* #df5ca9  quote border, anchor, separators (pink) */
+  --role-hover-text: 189, 59, 139;     /* #bd3b8b  hover cue, text */
+  --role-hover-mark: 223, 92, 169;     /* #df5ca9  hover cue, underlines / borders */
+  --role-tag-text: 159, 97, 5;         /* #9f6105  tag (yellow becomes orange) */
+  --role-tag-border: 193, 126, 46;     /* #c17e2e */
+  --role-code-inline: 151, 78, 119;    /* #974e77  inline code (soft pink) */
+  --role-code-inline-bg: 227, 229, 231; /* #e3e5e7 */
+  --role-code-block-bg: 235, 237, 239; /* #ebedef */
+  --role-badge-text: 88, 91, 96;       /* #585b60  draft badge (grey) */
+  --role-badge-border: 149, 153, 156;  /* #95999c */
+  --role-outline-text: 43, 46, 51;     /* #2b2e33  outline button (CV) */
+  --role-outline-border: 149, 153, 156; /* #95999c */
+  --role-row-hover-bg: 212, 214, 217;  /* #d4d6d9  search row, one step up */
+  --role-motif: var(--role-link);      /* background node-graph */
 
-  /* --- secondary: muted amber (rarely used by Congo here) --- */
-  --color-secondary-50: 252, 244, 229;
-  --color-secondary-100: 249, 231, 200;
-  --color-secondary-200: 242, 206, 145;
-  --color-secondary-300: 232, 178, 96;
-  --color-secondary-400: 209, 146, 42;
-  --color-secondary-500: 176, 120, 30;
-  --color-secondary-600: 146, 99, 24;
-  --color-secondary-700: 117, 78, 20;
-  --color-secondary-800: 94, 63, 18;
-  --color-secondary-900: 78, 53, 18;
-  --color-secondary-950: 45, 29, 8;
+  /* --- primary = hover-cue slots (see header). Light: Congo uses 500 for
+     underlines, 600/700 for hover text, 100/200 for soft fills (skip link). */
+  --color-primary-50: 255, 236, 245;
+  --color-primary-100: 255, 216, 235;
+  --color-primary-200: 255, 179, 219;
+  --color-primary-300: var(--role-hover-mark);
+  --color-primary-400: var(--role-hover-mark);
+  --color-primary-500: var(--role-hover-mark);
+  --color-primary-600: var(--role-hover-text);
+  --color-primary-700: var(--role-hover-text);
+  --color-primary-800: 106, 2, 73;
+  --color-primary-900: 86, 0, 58;
+  --color-primary-950: 53, 0, 35;
+
+  /* --- secondary = Dracula cyan family. Congo itself only uses it for
+     inline code (routed away in custom.css); kept as a coherent ramp. --- */
+  --color-secondary-50: 230, 246, 249;
+  --color-secondary-100: 204, 237, 243;
+  --color-secondary-200: 160, 218, 229;
+  --color-secondary-300: 110, 192, 208;
+  --color-secondary-400: 52, 151, 170;  /* #3497aa  3:1 */
+  --color-secondary-500: 9, 122, 140;   /* #097a8c  4.5:1 */
+  --color-secondary-600: 6, 102, 118;
+  --color-secondary-700: 4, 83, 96;
+  --color-secondary-800: 3, 66, 77;
+  --color-secondary-900: 2, 52, 61;
+  --color-secondary-950: 1, 32, 38;
 }
 
-/* --- dark appearance: bright crisp gold (high luminance) --- */
 .dark {
-  --color-primary-50: 60, 42, 12;
-  --color-primary-100: 92, 64, 16;
-  --color-primary-200: 130, 92, 24;
-  --color-primary-300: 184, 130, 34;
-  --color-primary-400: 255, 210, 122;  /* #ffd27a  tint (hover borders) */
-  --color-primary-500: 247, 178, 46;   /* #f7b22e  primary accent / links */
-  --color-primary-600: 219, 150, 30;
-  --color-primary-700: 184, 122, 22;
-  --color-primary-800: 146, 96, 18;
-  --color-primary-900: 110, 72, 14;
-  --color-primary-950: 70, 45, 8;
+  --color-neutral: 232, 233, 236;      /* #e8e9ec  headings (dark), 12.3:1 */
+
+  /* --- role tokens (dark): Dracula as-is --- */
+  --role-link: 139, 233, 253;          /* #8be9fd  cyan */
+  --role-mark: 255, 121, 198;          /* #ff79c6  pink */
+  --role-hover-text: 255, 121, 198;
+  --role-hover-mark: 255, 121, 198;
+  --role-tag-text: 241, 250, 140;      /* #f1fa8c  yellow */
+  --role-tag-border: 241, 250, 140;
+  --role-code-inline: 246, 171, 210;   /* #f6abd2  soft pink */
+  --role-code-inline-bg: 48, 51, 58;   /* #30333a */
+  --role-code-block-bg: 30, 33, 38;    /* #1e2126  one step below page bg */
+  --role-badge-text: 184, 187, 190;    /* #b8bbbe */
+  --role-badge-border: 116, 120, 124;  /* #74787c */
+  --role-outline-text: 232, 233, 236;  /* #e8e9ec */
+  --role-outline-border: 116, 120, 124; /* #74787c */
+  --role-row-hover-bg: 72, 76, 83;     /* #484c53  search row, one step up */
+
+  /* --- primary slots (dark): Congo uses dark:…-400 for hover text, but also
+     plain group-hover:…-600 (its `group-dark:` variant never compiled), and
+     500 for underlines — all three must be the hover cue. --- */
+  --color-primary-300: 254, 180, 219;  /* #feb4db  tint */
+  --color-primary-400: var(--role-hover-text);
+  --color-primary-500: var(--role-hover-mark);
+  --color-primary-600: var(--role-hover-text);
+  --color-primary-700: 201, 71, 149;
+  --color-primary-800: 173, 44, 125;
+  --color-primary-900: 146, 4, 102;
+  --color-primary-950: 102, 0, 70;
+
+  --color-secondary-400: 182, 241, 254;
+  --color-secondary-500: 139, 233, 253; /* #8be9fd */
+  --color-secondary-600: 112, 206, 225;
+  --color-secondary-700: 85, 180, 199;
+  --color-secondary-800: 57, 155, 174;
+  --color-secondary-900: 21, 130, 149;
+  --color-secondary-950: 5, 96, 111;
 }

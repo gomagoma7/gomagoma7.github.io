@@ -2,7 +2,7 @@ colorScheme = "jupiter"
 defaultAppearance = "dark"
 autoSwitchAppearance = true
 
-defaultThemeColor = "#14100c"
+defaultThemeColor = "#24272d"
 
 enableSearch = true
 enableCodeCopy = true

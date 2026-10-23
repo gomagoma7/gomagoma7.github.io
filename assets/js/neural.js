@@ -1,5 +1,5 @@
 /* ============================================================================
-   neural.js — drifting node-graph behind the profile hero (Jupiter accent).
+   neural.js — drifting node-graph behind the profile hero (motif role).
    Loaded from layouts/_partials/extend-head.html. Vanilla, dependency-free.
    Self-disables on prefers-reduced-motion (renders a single static frame).
    Host: the element marked [data-neural] (falls back to common hero classes).
@@ -10,8 +10,8 @@
   function accent() {
     return (
       getComputedStyle(document.documentElement)
-        .getPropertyValue("--color-primary-500")
-        .trim() || "247, 178, 46"
+        .getPropertyValue("--role-motif")
+        .trim() || "139, 233, 253"
     );
   }
   function rgbaAccent(a) {

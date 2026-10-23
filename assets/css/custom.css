@@ -1,8 +1,14 @@
 /* ============================================================================
-   custom.css — Jupiter typography + component polish (Congo).
+   custom.css — Jupiter typography + colour routing (Congo).
    Auto-loaded by Congo head.html AFTER the scheme + compiled Tailwind, so
-   these rules win on the cascade. Targets Congo's real markup / Tailwind
-   classes (.prose, .article-link-card, profile hero).
+   these rules win on the cascade.
+
+   Colour: every value comes from a role token (--role-*) defined in
+   schemes/jupiter.css; this file only routes Congo's markup to roles. The one
+   exception is the code-highlighting palette (§7), which is a self-contained
+   table. Congo's Tailwind is precompiled, so new utility classes do not exist
+   — overridden templates carry plain class names styled here instead.
+   Spec: voyager/cabin/aglaea/design/homepage-handoff.md
    ========================================================================== */
 
 :root {
@@ -36,7 +42,7 @@ header a[href$="/"],
 }
 
 /* ------------------------ 2. Profile hero polish ------------------------- */
-/* round avatar gets a subtle warm ring */
+/* round avatar gets a subtle ring */
 .home-hero img.rounded-full,
 .profile img.rounded-full {
   border: 1px solid rgb(var(--color-neutral-200));
@@ -58,37 +64,65 @@ header a[href$="/"],
   z-index: 1;
 }
 
-/* --------------------- 3. Blog list entries (refine) -------------------- */
-/* This repo's article-link.html is a borderless title+meta+summary row (the
-   project pages are standalone HTML, so the list is usually empty). Keep it
-   light: title turns gold on hover, year headers muted. If real markdown
-   posts are later added and you want bordered cards, wrap each entry and
-   style it here. */
-.max-w-prose > article h3 a:hover {
-  color: rgb(var(--color-primary-500));
+/* ----------------------- 3. Hover cue outside prose ---------------------- */
+/* Header, logo, footer, prev/next and list-title underlines already reach the
+   hover cue through the primary slots in the scheme. Only spots where Congo
+   picks a shade outside those slots are routed here. */
+
+/* List titles (article-link.html): text joins the underline in the hover cue,
+   as the header menu does. Heading anchors (h3 > span > a) are excluded.
+   `:root` lifts it above Congo's `dark:text-neutral`. */
+:root article h3 > a:hover,
+:root article h3 > div > a:hover {
+  color: rgb(var(--role-hover-text));
+}
+
+/* Footer credit links use primary-500 (the mark tier) as hover text. */
+footer a.hover\:text-primary-500:hover {
+  color: rgb(var(--role-hover-text));
 }
 
 /* ----------------------------- 4. Article prose -------------------------- */
 .prose {
   line-height: 1.7;
+  /* body one step stronger than Congo's default (light 12.2:1, dark 10.3:1) */
+  --tw-prose-body: rgb(var(--color-neutral-900));
+  --tw-prose-invert-body: rgb(var(--color-neutral-200));
+  --tw-prose-links: rgb(var(--role-link));
+  --tw-prose-invert-links: rgb(var(--role-link));
+  --tw-prose-quote-borders: rgb(var(--role-mark));
+  --tw-prose-invert-quote-borders: rgb(var(--role-mark));
+  --tw-prose-code: rgb(var(--role-code-inline));
+  --tw-prose-invert-code: rgb(var(--role-code-inline));
 }
 
-/* gold "#" before h2 (the section-marker motif) */
-.prose h2::before {
-  content: "# ";
-  color: rgb(var(--color-primary-500));
-}
-
-/* links gold, with a soft underline */
-.prose a {
-  color: rgb(var(--color-primary-500));
-  text-decoration-color: rgb(var(--color-primary-400));
+/* Links: cyan text + cyan underline at rest. On hover the text stays, the
+   underline turns to the hover cue at 2px, and nothing is filled (Congo fills
+   with primary and drops the underline). Selector mirrors Congo's so the
+   heading anchors (not-prose) stay out; `:root` lifts it above Congo's
+   prose-invert rule, which greys the underline in dark. */
+:root .prose :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  text-decoration-color: rgb(var(--role-link));
   text-underline-offset: 2px;
 }
+:root .prose :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)):hover,
+:root .prose :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)):focus-visible {
+  color: var(--tw-prose-links);
+  background-color: transparent;
+  text-decoration-line: underline;
+  text-decoration-color: rgb(var(--role-hover-mark));
+  text-decoration-thickness: 2px;
+}
 
-/* blockquote: gold left border, italic, muted */
+/* Heading anchor (layouts/_markup/render-heading.html): the single "#",
+   shown on hover only, in the structure mark. */
+.heading-anchor {
+  color: rgb(var(--role-mark));
+}
+
+/* blockquote: structure-mark border (colour via --tw-prose-quote-borders) */
 .prose blockquote {
-  border-left: 2px solid rgb(var(--color-primary-500));
+  border-inline-start-width: 2px;
   color: rgb(var(--color-neutral-600));
   font-style: italic;
 }
@@ -96,18 +130,7 @@ header a[href$="/"],
   color: rgb(var(--color-neutral-400));
 }
 
-/* list bullets as gold arrows */
-.prose ul > li::before {
-  content: "→";
-  background: none !important;
-  border-radius: 0 !important;
-  width: auto !important;
-  height: auto !important;
-  color: rgb(var(--color-primary-500));
-  transform: none;
-}
-
-/* code: mono everywhere, warm code-block bg, gold language label */
+/* code: mono everywhere */
 .prose code,
 .prose pre,
 .prose pre code {
@@ -118,21 +141,219 @@ header a[href$="/"],
   border-radius: 10px;
 }
 .dark .prose pre {
-  background: rgb(26, 20, 13) !important; /* #1a140d */
   border-color: rgb(var(--color-neutral-700));
 }
 .prose :not(pre) > code {
-  background: rgb(var(--color-neutral-100));
+  background: rgb(var(--role-code-inline-bg));
   border-radius: 4px;
 }
-.dark .prose :not(pre) > code {
-  background: rgb(40, 32, 23); /* #282017 */
+
+/* ---------------------------- 5. Components ----------------------------- */
+/* Article tags (article-meta.html badges): yellow at rest, hover cue on hover. */
+a.rounded-md.border[href*="/tags/"] {
+  color: rgb(var(--role-tag-text));
+  border-color: rgb(var(--role-tag-border));
+}
+a.rounded-md.border[href*="/tags/"]:hover,
+a.rounded-md.border[href*="/tags/"]:focus-visible {
+  color: rgb(var(--role-hover-text));
+  border-color: rgb(var(--role-hover-mark));
 }
 
-/* ------------------------------- 5. Misc -------------------------------- */
+/* Draft badge (layouts/_partials/badge.html): grey. */
+.badge {
+  color: rgb(var(--role-badge-text));
+  border-color: rgb(var(--role-badge-border));
+}
+
+/* Search results (rows are built by Congo's search.js): row one step up,
+   title in the hover cue, 4px bar on the left edge. Keyboard focus (arrow
+   keys move focus between rows) looks the same as hover. */
+#search-results a:hover,
+#search-results a:focus {
+  background-color: rgb(var(--role-row-hover-bg));
+  box-shadow: inset 4px 0 0 rgb(var(--role-hover-mark));
+}
+#search-results a:hover .grow > :first-child,
+#search-results a:focus .grow > :first-child {
+  color: rgb(var(--role-hover-text));
+}
+
+/* Pagination (layouts/_partials/pagination.html): no fill; hover and the
+   current page are marked by hover-cue text + underline. */
+.pager-link:hover,
+.pager-link:focus-visible,
+.pager-current {
+  color: rgb(var(--role-hover-text));
+  text-decoration-line: underline;
+  text-decoration-color: rgb(var(--role-hover-mark));
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+/* CV "Save as PDF" (layouts/cv.html): outline only. */
+.cv-print-button {
+  background: transparent;
+  color: rgb(var(--role-outline-text));
+  border-color: rgb(var(--role-outline-border));
+}
+.cv-print-button:hover,
+.cv-print-button:focus-visible {
+  color: rgb(var(--role-hover-text));
+  border-color: rgb(var(--role-hover-mark));
+}
+
+/* Code copy button: Congo fills it with primary on hover/focus (a bright pink
+   area in dark). Step the neutral up instead and colour the label. */
+.copy-button:hover,
+.copy-button:focus,
+.copy-button:active {
+  background-color: rgb(var(--color-neutral-200));
+  color: rgb(var(--role-hover-text));
+}
+.dark .copy-button:hover,
+.dark .copy-button:focus,
+.dark .copy-button:active {
+  background-color: rgb(var(--color-neutral-700));
+}
+
+/* ------------------------------- 6. Misc -------------------------------- */
 ::selection {
-  background: rgba(247, 178, 46, 0.18);
+  background: rgba(var(--role-mark), 0.22);
 }
 :root:not(.dark) ::selection {
-  background: rgba(168, 94, 0, 0.14);
+  background: rgba(var(--role-mark), 0.16);
 }
+
+/* ------------------- 7. Code highlighting (Dracula) --------------------- */
+/* Dark: Dracula as-is (`hugo gen chromastyles --style=dracula`, colours only).
+   Light: the same hues darkened to 4.5:1 on the light code background, not
+   Dracula's own light theme (which shifts hues). Classes Congo colours but
+   Dracula leaves alone (gh, gp, gt) inherit, so no Congo colour survives.
+   The block keeps the site's code background instead of Dracula's. */
+:root .chroma,
+.prose pre {
+  background-color: rgb(var(--role-code-block-bg));
+}
+:root .chroma .hl {
+  background-color: rgb(var(--color-neutral-200));
+}
+.dark .chroma .hl {
+  background-color: rgb(var(--color-neutral-700));
+}
+:root:not(.dark) .chroma { color:#2b2e33 }
+:root:not(.dark) .chroma .c { color:#5a699b }
+:root:not(.dark) .chroma .c1 { color:#5a699b }
+:root:not(.dark) .chroma .ch { color:#5a699b }
+:root:not(.dark) .chroma .cm { color:#5a699b }
+:root:not(.dark) .chroma .cp { color:#b73686 }
+:root:not(.dark) .chroma .cpf { color:#b73686 }
+:root:not(.dark) .chroma .cs { color:#5a699b }
+:root:not(.dark) .chroma .dl { color:#9a5d01 }
+:root:not(.dark) .chroma .fm { color:#017c2f }
+:root:not(.dark) .chroma .gd { color:#d0212e }
+:root:not(.dark) .chroma .gh { color:inherit }
+:root:not(.dark) .chroma .gi { color:#017c2f }
+:root:not(.dark) .chroma .go { color:#44475a }
+:root:not(.dark) .chroma .gp { color:inherit }
+:root:not(.dark) .chroma .gt { color:inherit }
+:root:not(.dark) .chroma .il { color:#8056b6 }
+:root:not(.dark) .chroma .k { color:#b73686 }
+:root:not(.dark) .chroma .kc { color:#b73686 }
+:root:not(.dark) .chroma .kd { color:#057587 }
+:root:not(.dark) .chroma .kn { color:#b73686 }
+:root:not(.dark) .chroma .kp { color:#b73686 }
+:root:not(.dark) .chroma .kr { color:#b73686 }
+:root:not(.dark) .chroma .kt { color:#057587 }
+:root:not(.dark) .chroma .ln { color:#74787c }
+:root:not(.dark) .chroma .lnt { color:#74787c }
+:root:not(.dark) .chroma .m { color:#8056b6 }
+:root:not(.dark) .chroma .mb { color:#8056b6 }
+:root:not(.dark) .chroma .mf { color:#8056b6 }
+:root:not(.dark) .chroma .mh { color:#8056b6 }
+:root:not(.dark) .chroma .mi { color:#8056b6 }
+:root:not(.dark) .chroma .mo { color:#8056b6 }
+:root:not(.dark) .chroma .na { color:#017c2f }
+:root:not(.dark) .chroma .nb { color:#057587 }
+:root:not(.dark) .chroma .nc { color:#017c2f }
+:root:not(.dark) .chroma .nf { color:#017c2f }
+:root:not(.dark) .chroma .nl { color:#057587 }
+:root:not(.dark) .chroma .nt { color:#b73686 }
+:root:not(.dark) .chroma .nv { color:#057587 }
+:root:not(.dark) .chroma .o { color:#b73686 }
+:root:not(.dark) .chroma .ow { color:#b73686 }
+:root:not(.dark) .chroma .s { color:#9a5d01 }
+:root:not(.dark) .chroma .s1 { color:#9a5d01 }
+:root:not(.dark) .chroma .s2 { color:#9a5d01 }
+:root:not(.dark) .chroma .sa { color:#9a5d01 }
+:root:not(.dark) .chroma .sb { color:#9a5d01 }
+:root:not(.dark) .chroma .sc { color:#9a5d01 }
+:root:not(.dark) .chroma .sd { color:#9a5d01 }
+:root:not(.dark) .chroma .se { color:#9a5d01 }
+:root:not(.dark) .chroma .sh { color:#9a5d01 }
+:root:not(.dark) .chroma .si { color:#9a5d01 }
+:root:not(.dark) .chroma .sr { color:#9a5d01 }
+:root:not(.dark) .chroma .ss { color:#9a5d01 }
+:root:not(.dark) .chroma .sx { color:#9a5d01 }
+:root:not(.dark) .chroma .vc { color:#057587 }
+:root:not(.dark) .chroma .vg { color:#057587 }
+:root:not(.dark) .chroma .vi { color:#057587 }
+:root:not(.dark) .chroma .vm { color:#057587 }
+.dark .chroma { color:#f8f8f2 }
+.dark .chroma .c { color:#6272a4 }
+.dark .chroma .c1 { color:#6272a4 }
+.dark .chroma .ch { color:#6272a4 }
+.dark .chroma .cm { color:#6272a4 }
+.dark .chroma .cp { color:#ff79c6 }
+.dark .chroma .cpf { color:#ff79c6 }
+.dark .chroma .cs { color:#6272a4 }
+.dark .chroma .dl { color:#f1fa8c }
+.dark .chroma .fm { color:#50fa7b }
+.dark .chroma .gd { color:#f55 }
+.dark .chroma .gh { color:inherit }
+.dark .chroma .gi { color:#50fa7b }
+.dark .chroma .go { color:#44475a }
+.dark .chroma .gp { color:inherit }
+.dark .chroma .gt { color:inherit }
+.dark .chroma .il { color:#bd93f9 }
+.dark .chroma .k { color:#ff79c6 }
+.dark .chroma .kc { color:#ff79c6 }
+.dark .chroma .kd { color:#8be9fd }
+.dark .chroma .kn { color:#ff79c6 }
+.dark .chroma .kp { color:#ff79c6 }
+.dark .chroma .kr { color:#ff79c6 }
+.dark .chroma .kt { color:#8be9fd }
+.dark .chroma .ln { color:#7f7f7f }
+.dark .chroma .lnt { color:#7f7f7f }
+.dark .chroma .m { color:#bd93f9 }
+.dark .chroma .mb { color:#bd93f9 }
+.dark .chroma .mf { color:#bd93f9 }
+.dark .chroma .mh { color:#bd93f9 }
+.dark .chroma .mi { color:#bd93f9 }
+.dark .chroma .mo { color:#bd93f9 }
+.dark .chroma .na { color:#50fa7b }
+.dark .chroma .nb { color:#8be9fd }
+.dark .chroma .nc { color:#50fa7b }
+.dark .chroma .nf { color:#50fa7b }
+.dark .chroma .nl { color:#8be9fd }
+.dark .chroma .nt { color:#ff79c6 }
+.dark .chroma .nv { color:#8be9fd }
+.dark .chroma .o { color:#ff79c6 }
+.dark .chroma .ow { color:#ff79c6 }
+.dark .chroma .s { color:#f1fa8c }
+.dark .chroma .s1 { color:#f1fa8c }
+.dark .chroma .s2 { color:#f1fa8c }
+.dark .chroma .sa { color:#f1fa8c }
+.dark .chroma .sb { color:#f1fa8c }
+.dark .chroma .sc { color:#f1fa8c }
+.dark .chroma .sd { color:#f1fa8c }
+.dark .chroma .se { color:#f1fa8c }
+.dark .chroma .sh { color:#f1fa8c }
+.dark .chroma .si { color:#f1fa8c }
+.dark .chroma .sr { color:#f1fa8c }
+.dark .chroma .ss { color:#f1fa8c }
+.dark .chroma .sx { color:#f1fa8c }
+.dark .chroma .vc { color:#8be9fd }
+.dark .chroma .vg { color:#8be9fd }
+.dark .chroma .vi { color:#8be9fd }
+.dark .chroma .vm { color:#8be9fd }
