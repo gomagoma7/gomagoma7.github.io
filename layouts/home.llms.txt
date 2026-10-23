@@ -1,0 +1,37 @@
+{{- $author := .Site.Params.author -}}
+# {{ .Site.Title }}
+
+> {{ .Site.Params.description }}
+
+{{ $author.bio }}
+
+## Site
+
+- [Home]({{ .Permalink }}): Profile and navigation
+{{- range .Site.Menus.main }}
+{{- with .Page }}
+- [{{ .Title }}]({{ .Permalink }})
+{{- end }}
+{{- end }}
+- [RSS]({{ "index.xml" | absURL }}): Feed of all posts
+{{- range $section := slice "research" "projects" "blog" }}
+{{- with site.GetPage $section }}
+{{- $sec := . }}
+{{- with .RegularPages }}
+
+## {{ $sec.Title }}
+{{ range .ByDate.Reverse }}
+- [{{ .Title }}]({{ .Permalink }}): {{ .Description | default .Summary | plainify }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+## Contact
+{{ range $author.links }}
+{{- range $name, $url := . }}
+{{- if hasPrefix $url "http" }}
+- {{ $name }}: {{ $url }}
+{{- end }}
+{{- end }}
+{{- end }}

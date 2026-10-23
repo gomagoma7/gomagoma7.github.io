@@ -12,7 +12,14 @@ summaryLength = 0
   tag = "tags"
 
 [outputs]
-  home = ["HTML", "RSS", "JSON"]
+  home = ["HTML", "RSS", "JSON", "llms"]
+
+[outputFormats]
+  [outputFormats.llms]
+    baseName = "llms"
+    mediaType = "text/plain"
+    isPlainText = true
+    notAlternative = true
 
 [privacy]
   [privacy.vimeo]
